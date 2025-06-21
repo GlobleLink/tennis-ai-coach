@@ -32,6 +32,40 @@
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
             backdrop-filter: blur(10px);
             text-align: center;
+            position: relative;
+        }
+        
+        .language-switch {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            display: flex;
+            background: rgba(103, 126, 234, 0.1);
+            border-radius: 20px;
+            padding: 3px;
+            gap: 2px;
+        }
+        
+        .lang-btn {
+            padding: 6px 12px;
+            border: none;
+            border-radius: 16px;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: transparent;
+            color: #667eea;
+        }
+        
+        .lang-btn.active {
+            background: #667eea;
+            color: white;
+            box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+        }
+        
+        .lang-btn:hover:not(.active) {
+            background: rgba(103, 126, 234, 0.1);
         }
         
         .header h1 {
@@ -596,6 +630,11 @@
                 font-size: 14px;
             }
             
+            .language-switch {
+                top: 12px;
+                right: 12px;
+            }
+            
             .analysis-panel {
                 padding: 15px;
             }
@@ -642,6 +681,17 @@
             .video-placeholder small {
                 font-size: 11px;
             }
+            
+            .language-switch {
+                top: 10px;
+                right: 10px;
+                transform: scale(0.9);
+            }
+            
+            .lang-btn {
+                padding: 4px 8px;
+                font-size: 10px;
+            }
         }
     </style>
 </head>
@@ -649,8 +699,12 @@
     <div class="app-container">
         <!-- Header -->
         <div class="header">
-            <h1>🎾 Tennis AI Coach</h1>
-            <p class="subtitle">AI-powered tennis technique analysis and coaching - Support live camera and video file analysis</p>
+            <div class="language-switch">
+                <button class="lang-btn active" data-lang="en">EN</button>
+                <button class="lang-btn" data-lang="zh">中文</button>
+            </div>
+            <h1 data-text="title">🎾 Tennis AI Coach</h1>
+            <p class="subtitle" data-text="subtitle">AI-powered tennis technique analysis and coaching - Support live camera and video file analysis</p>
         </div>
         
         <!-- Error Message -->
@@ -662,37 +716,36 @@
             <div class="video-section">
                 <!-- Mode Tabs -->
                 <div class="mode-tabs">
-                    <div class="mode-tab active" data-mode="camera">📹 Live Camera</div>
-                    <div class="mode-tab" data-mode="upload">📁 Upload Video</div>
+                    <div class="mode-tab active" data-mode="camera" data-text="liveCameraTab">📹 Live Camera</div>
+                    <div class="mode-tab" data-mode="upload" data-text="uploadVideoTab">📁 Upload Video</div>
                 </div>
                 
                 <!-- Camera Mode -->
                 <div class="mode-content active" id="cameraMode">
                     <div class="video-container">
                         <div class="camera-controls">
-                            <button class="camera-switch-btn" id="cameraSwitchBtn">
+                            <button class="camera-switch-btn" id="cameraSwitchBtn" data-text="switchCamera">
                                 🔄 Switch Camera
                             </button>
                         </div>
-                        <div class="status-indicator" id="statusIndicator">Ready</div>
-                        <div class="camera-indicator" id="cameraIndicator">Front Camera</div>
+                        <div class="status-indicator" id="statusIndicator" data-text="ready">Ready</div>
+                        <div class="camera-indicator" id="cameraIndicator" data-text="frontCamera">Front Camera</div>
                         <video id="videoElement" autoplay muted playsinline style="display: none;"></video>
                         <canvas id="canvasElement"></canvas>
                         <div class="video-placeholder" id="placeholder">
-                            📹<br>
-                            Click to start camera analysis<br>
-                            <small>Real-time tennis motion recognition</small>
+                            <span data-text="cameraPlaceholder">📹<br>Click to start camera analysis<br></span>
+                            <small data-text="cameraPlaceholderSmall">Real-time tennis motion recognition</small>
                         </div>
                     </div>
                     
                     <div class="controls">
-                        <button class="btn btn-primary" id="startBtn">
+                        <button class="btn btn-primary" id="startBtn" data-text="startAnalysis">
                             🎥 Start Analysis
                         </button>
-                        <button class="btn btn-danger" id="stopBtn" style="display: none;">
+                        <button class="btn btn-danger" id="stopBtn" style="display: none;" data-text="stopAnalysis">
                             ⏹️ Stop Analysis
                         </button>
-                        <button class="btn btn-secondary" id="resetBtn">
+                        <button class="btn btn-secondary" id="resetBtn" data-text="reset">
                             🔄 Reset
                         </button>
                     </div>
@@ -702,13 +755,13 @@
                 <div class="mode-content" id="uploadMode">
                     <div class="upload-area" id="uploadArea">
                         <div class="upload-icon">📁</div>
-                        <p style="margin-bottom: 10px; color: #4a5568; font-weight: 500;">Click or drag to upload video file</p>
-                        <p style="font-size: 12px; color: #718096;">Support MP4, MOV, AVI formats, max file size 50MB</p>
+                        <p style="margin-bottom: 10px; color: #4a5568; font-weight: 500;" data-text="uploadText">Click or drag to upload video file</p>
+                        <p style="font-size: 12px; color: #718096;" data-text="uploadFormat">Support MP4, MOV, AVI formats, max file size 50MB</p>
                         <input type="file" id="fileInput" accept="video/*">
                     </div>
                     
                     <div class="video-container" id="uploadVideoContainer" style="display: none;">
-                        <div class="status-indicator" id="uploadStatusIndicator">Video Loaded</div>
+                        <div class="status-indicator" id="uploadStatusIndicator" data-text="videoLoaded">Video Loaded</div>
                         <video id="uploadVideoElement" controls></video>
                         <canvas id="uploadCanvasElement"></canvas>
                     </div>
@@ -722,22 +775,22 @@
                             <span class="time-display" id="totalTime">00:00</span>
                         </div>
                         <div class="playback-controls">
-                            <button class="btn btn-secondary btn-small" id="playPauseBtn">▶️ Play</button>
-                            <button class="btn btn-primary btn-small" id="analyzeVideoBtn">🔍 Analyze Video</button>
-                            <button class="btn btn-secondary btn-small" id="clearVideoBtn">🗑️ Clear</button>
+                            <button class="btn btn-secondary btn-small" id="playPauseBtn" data-text="play">▶️ Play</button>
+                            <button class="btn btn-primary btn-small" id="analyzeVideoBtn" data-text="analyzeVideo">🔍 Analyze Video</button>
+                            <button class="btn btn-secondary btn-small" id="clearVideoBtn" data-text="clear">🗑️ Clear</button>
                         </div>
                     </div>
                     
                     <div class="analysis-progress" id="analysisProgress">
                         <div class="progress-spinner"></div>
-                        <p style="color: #2d3748; font-weight: 500; margin-bottom: 5px;">Analyzing video...</p>
-                        <p style="color: #718096; font-size: 14px;" id="analysisProgressText">Processing, please wait</p>
+                        <p style="color: #2d3748; font-weight: 500; margin-bottom: 5px;" data-text="analyzingVideo">Analyzing video...</p>
+                        <p style="color: #718096; font-size: 14px;" id="analysisProgressText" data-text="processingWait">Processing, please wait</p>
                     </div>
                 </div>
                 
                 <div class="loading" id="loadingIndicator">
                     <div class="spinner"></div>
-                    <p>Loading AI model...</p>
+                    <p data-text="loadingAI">Loading AI model...</p>
                 </div>
             </div>
             
@@ -747,16 +800,16 @@
                     <div class="score-circle" id="scoreCircle">
                         <div class="score-inner">
                             <div class="score-number" id="scoreNumber">--</div>
-                            <div class="score-label">Overall Score</div>
+                            <div class="score-label" data-text="overallScore">Overall Score</div>
                         </div>
                     </div>
-                    <h3 style="color: #2d3748; margin-bottom: 5px;" id="analysisTitle">Select Analysis Mode</h3>
-                    <p style="color: #718096; font-size: 14px;" id="analysisDesc">Choose live camera or upload video for motion analysis</p>
+                    <h3 style="color: #2d3748; margin-bottom: 5px;" id="analysisTitle" data-text="selectAnalysisMode">Select Analysis Mode</h3>
+                    <p style="color: #718096; font-size: 14px;" id="analysisDesc" data-text="chooseMode">Choose live camera or upload video for motion analysis</p>
                 </div>
                 
                 <div class="metrics">
                     <div class="metric-item">
-                        <span class="metric-label">Posture Stability</span>
+                        <span class="metric-label" data-text="postureStability">Posture Stability</span>
                         <div style="display: flex; align-items: center;">
                             <span class="metric-value" id="stabilityValue">--</span>
                             <div class="metric-bar">
@@ -765,7 +818,7 @@
                         </div>
                     </div>
                     <div class="metric-item">
-                        <span class="metric-label">Motion Fluidity</span>
+                        <span class="metric-label" data-text="motionFluidity">Motion Fluidity</span>
                         <div style="display: flex; align-items: center;">
                             <span class="metric-value" id="fluidityValue">--</span>
                             <div class="metric-bar">
@@ -774,7 +827,7 @@
                         </div>
                     </div>
                     <div class="metric-item">
-                        <span class="metric-label">Coordination</span>
+                        <span class="metric-label" data-text="coordination">Coordination</span>
                         <div style="display: flex; align-items: center;">
                             <span class="metric-value" id="coordinationValue">--</span>
                             <div class="metric-bar">
@@ -783,7 +836,7 @@
                         </div>
                     </div>
                     <div class="metric-item">
-                        <span class="metric-label">Technical Accuracy</span>
+                        <span class="metric-label" data-text="technicalAccuracy">Technical Accuracy</span>
                         <div style="display: flex; align-items: center;">
                             <span class="metric-value" id="accuracyValue">--</span>
                             <div class="metric-bar">
@@ -794,11 +847,11 @@
                 </div>
                 
                 <div class="suggestions">
-                    <h3>💡 Analysis Suggestions</h3>
+                    <h3 data-text="analysisSuggestions">💡 Analysis Suggestions</h3>
                     <div id="suggestionsList">
                         <div class="suggestion-item">
                             <div class="suggestion-icon"></div>
-                            <span>Select analysis mode to see motion suggestions</span>
+                            <span data-text="selectModeForSuggestions">Select analysis mode to see motion suggestions</span>
                         </div>
                     </div>
                 </div>
@@ -813,6 +866,225 @@
     <script src="https://cdn.jsdelivr.net/npm/@mediapipe/pose/pose.js"></script>
 
     <script>
+        // Language Configuration
+        const languages = {
+            en: {
+                title: '🎾 Tennis AI Coach',
+                subtitle: 'AI-powered tennis technique analysis and coaching - Support live camera and video file analysis',
+                liveCameraTab: '📹 Live Camera',
+                uploadVideoTab: '📁 Upload Video',
+                switchCamera: '🔄 Switch Camera',
+                ready: 'Ready',
+                frontCamera: 'Front Camera',
+                rearCamera: 'Rear Camera',
+                cameraPlaceholder: '📹<br>Click to start camera analysis<br>',
+                cameraPlaceholderSmall: 'Real-time tennis motion recognition',
+                startAnalysis: '🎥 Start Analysis',
+                stopAnalysis: '⏹️ Stop Analysis',
+                reset: '🔄 Reset',
+                uploadText: 'Click or drag to upload video file',
+                uploadFormat: 'Support MP4, MOV, AVI formats, max file size 50MB',
+                videoLoaded: 'Video Loaded',
+                play: '▶️ Play',
+                pause: '⏸️ Pause',
+                analyzeVideo: '🔍 Analyze Video',
+                clear: '🗑️ Clear',
+                analyzingVideo: 'Analyzing video...',
+                processingWait: 'Processing, please wait',
+                overallScore: 'Overall Score',
+                selectAnalysisMode: 'Select Analysis Mode',
+                chooseMode: 'Choose live camera or upload video for motion analysis',
+                postureStability: 'Posture Stability',
+                motionFluidity: 'Motion Fluidity',
+                coordination: 'Coordination',
+                technicalAccuracy: 'Technical Accuracy',
+                analysisSuggestions: '💡 Analysis Suggestions',
+                selectModeForSuggestions: 'Select analysis mode to see motion suggestions',
+                loadingAI: 'Loading AI model...',
+                
+                // Status messages
+                startingCamera: 'Starting camera...',
+                analyzing: 'Analyzing...',
+                stopped: 'Stopped',
+                
+                // Analysis modes
+                liveCameraMode: 'Live Camera Mode',
+                videoFileMode: 'Video File Mode',
+                clickToStart: 'Click start to begin real-time motion analysis',
+                uploadForAnalysis: 'Upload a video file for motion analysis',
+                realTimeAnalysis: 'Real-time Motion Analysis',
+                videoAnalysisComplete: 'Video Analysis Complete',
+                
+                // Suggestions
+                keepStable: 'Keep your body center stable, maintain firm footing',
+                makeFluid: 'Make your movements more fluid, avoid sudden stops',
+                focusCoordination: 'Focus on coordinating all body parts together',
+                improveStroke: 'Improve stroke technique, extend arms fully',
+                greatTechnique: 'Great technique! Keep it up!',
+                
+                // Analysis descriptions
+                excellentTechnique: 'Excellent technique, keep it up!',
+                goodForm: 'Good form, continue refining details',
+                basicCorrect: 'Basic technique correct, needs improvement',
+                needsAdjustment: 'Technique needs adjustment, follow suggestions',
+                studyTutorials: 'Recommend studying tutorial videos for basic techniques',
+                
+                // Error messages
+                initFailed: 'Initialization failed: ',
+                cameraAccess: 'Cannot access camera: ',
+                switchFailed: 'Failed to switch camera: ',
+                startFirst: 'Please start camera analysis first',
+                selectVideo: 'Please select a valid video file',
+                fileSizeLimit: 'File size cannot exceed 50MB',
+                uploadFirst: 'Please upload a video file first',
+                videoAnalysisFailed: 'Video analysis failed: ',
+                noValidData: 'No valid motion data detected. Please ensure the video shows clear human movements',
+                noValidMovements: 'No valid movements found in video. Please upload a video with clear human motion',
+                loadFailed: 'Failed to load video: '
+            },
+            zh: {
+                title: '🎾 网球智能陪练',
+                subtitle: 'AI驱动的网球技术分析与指导 - 支持实时摄像头和视频文件分析',
+                liveCameraTab: '📹 实时摄像头',
+                uploadVideoTab: '📁 上传视频',
+                switchCamera: '🔄 切换摄像头',
+                ready: '准备就绪',
+                frontCamera: '前置摄像头',
+                rearCamera: '后置摄像头',
+                cameraPlaceholder: '📹<br>点击开始摄像头分析<br>',
+                cameraPlaceholderSmall: '实时网球动作识别',
+                startAnalysis: '🎥 开始分析',
+                stopAnalysis: '⏹️ 停止分析',
+                reset: '🔄 重置',
+                uploadText: '点击或拖拽上传视频文件',
+                uploadFormat: '支持 MP4, MOV, AVI 格式，建议文件大小不超过 50MB',
+                videoLoaded: '视频已加载',
+                play: '▶️ 播放',
+                pause: '⏸️ 暂停',
+                analyzeVideo: '🔍 分析视频',
+                clear: '🗑️ 清除',
+                analyzingVideo: '正在分析视频...',
+                processingWait: '处理中，请稍候',
+                overallScore: '综合评分',
+                selectAnalysisMode: '选择分析模式',
+                chooseMode: '实时摄像头或上传视频进行动作分析',
+                postureStability: '姿势稳定性',
+                motionFluidity: '动作流畅度',
+                coordination: '协调性',
+                technicalAccuracy: '技术准确性',
+                analysisSuggestions: '💡 分析建议',
+                selectModeForSuggestions: '选择分析模式后将显示动作建议',
+                loadingAI: '正在加载AI模型...',
+                
+                // Status messages
+                startingCamera: '启动摄像头...',
+                analyzing: '分析中...',
+                stopped: '已停止',
+                
+                // Analysis modes
+                liveCameraMode: '实时摄像头模式',
+                videoFileMode: '视频文件模式',
+                clickToStart: '点击开始进行实时动作分析',
+                uploadForAnalysis: '上传视频文件进行动作分析',
+                realTimeAnalysis: '实时动作分析',
+                videoAnalysisComplete: '视频分析完成',
+                
+                // Suggestions
+                keepStable: '保持身体重心稳定，双脚站稳',
+                makeFluid: '动作要更加流畅，避免突然停顿',
+                focusCoordination: '注意身体各部分的协调配合',
+                improveStroke: '完善击球姿势，手臂充分伸展',
+                greatTechnique: '动作很棒，继续保持！',
+                
+                // Analysis descriptions
+                excellentTechnique: '动作非常标准，保持下去！',
+                goodForm: '动作良好，继续优化细节',
+                basicCorrect: '动作基本正确，需要改进',
+                needsAdjustment: '动作需要调整，注意建议',
+                studyTutorials: '建议参考教学视频学习基础动作',
+                
+                // Error messages
+                initFailed: '初始化失败：',
+                cameraAccess: '无法访问摄像头：',
+                switchFailed: '摄像头切换失败：',
+                startFirst: '请先开始摄像头分析',
+                selectVideo: '请选择有效的视频文件',
+                fileSizeLimit: '文件大小不能超过50MB',
+                uploadFirst: '请先上传视频文件',
+                videoAnalysisFailed: '视频分析失败：',
+                noValidData: '未检测到有效的动作数据，请确保视频中有清晰的人体动作',
+                noValidMovements: '视频分析未发现有效动作，请上传包含清晰人体动作的视频',
+                loadFailed: '视频加载失败：'
+            }
+        };
+
+        // Language Manager
+        class LanguageManager {
+            constructor() {
+                this.currentLang = 'en';
+                this.loadSavedLanguage();
+                this.setupLanguageButtons();
+            }
+
+            loadSavedLanguage() {
+                const saved = localStorage.getItem('tennis-ai-language');
+                if (saved && languages[saved]) {
+                    this.currentLang = saved;
+                }
+                this.updateInterface();
+            }
+
+            setupLanguageButtons() {
+                document.querySelectorAll('.lang-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const lang = btn.dataset.lang;
+                        this.switchLanguage(lang);
+                    });
+                });
+            }
+
+            switchLanguage(lang) {
+                if (!languages[lang]) return;
+                
+                this.currentLang = lang;
+                localStorage.setItem('tennis-ai-language', lang);
+                
+                // Update button states
+                document.querySelectorAll('.lang-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.lang === lang);
+                });
+                
+                this.updateInterface();
+            }
+
+            updateInterface() {
+                const texts = languages[this.currentLang];
+                
+                // Update all elements with data-text attribute
+                document.querySelectorAll('[data-text]').forEach(element => {
+                    const key = element.dataset.text;
+                    if (texts[key]) {
+                        if (element.tagName === 'INPUT') {
+                            element.placeholder = texts[key];
+                        } else {
+                            element.innerHTML = texts[key];
+                        }
+                    }
+                });
+
+                // Update button active state on load
+                document.querySelectorAll('.lang-btn').forEach(btn => {
+                    btn.classList.toggle('active', btn.dataset.lang === this.currentLang);
+                });
+            }
+
+            getText(key) {
+                return languages[this.currentLang][key] || key;
+            }
+        }
+
+        // Initialize language manager
+        const langManager = new LanguageManager();
         class TennisAnalyzer {
             constructor() {
                 this.pose = null;
@@ -835,7 +1107,15 @@
                     accuracy: 0
                 };
                 
+                // Ensure langManager is available
+                this.langManager = window.langManager;
+                
                 this.init();
+            }
+            
+            // Helper method for getting translated text
+            getText(key) {
+                return this.langManager ? this.langManager.getText(key) : key;
             }
             
             async init() {
@@ -845,7 +1125,7 @@
                     this.setupEventListeners();
                     this.showLoading(false);
                 } catch (error) {
-                    this.showError('Initialization failed: ' + error.message);
+                    this.showError(this.getText('initFailed') + error.message);
                     this.showLoading(false);
                 }
             }
@@ -918,7 +1198,7 @@
             
             async switchCamera() {
                 if (!this.isAnalyzing) {
-                    this.showError('Please start camera analysis first');
+                    this.showError(langManager.getText('startFirst'));
                     return;
                 }
                 
@@ -942,7 +1222,7 @@
                     await this.startCameraStream();
                     
                 } catch (error) {
-                    this.showError('Failed to switch camera: ' + error.message);
+                    this.showError(langManager.getText('switchFailed') + error.message);
                     // Revert facing mode if switch failed
                     this.currentFacingMode = this.currentFacingMode === 'user' ? 'environment' : 'user';
                     this.updateCameraIndicator();
@@ -951,7 +1231,8 @@
             
             updateCameraIndicator() {
                 const indicator = document.getElementById('cameraIndicator');
-                indicator.textContent = this.currentFacingMode === 'user' ? 'Front Camera' : 'Rear Camera';
+                indicator.textContent = this.currentFacingMode === 'user' ? 
+                    langManager.getText('frontCamera') : langManager.getText('rearCamera');
             }
             
             switchMode(mode) {
@@ -965,20 +1246,20 @@
                 this.reset();
                 
                 if (mode === 'camera') {
-                    this.updateAnalysisPanel('--', 'Live Camera Mode', 'Click start to begin real-time motion analysis');
+                    this.updateAnalysisPanel('--', this.getText('liveCameraMode'), this.getText('clickToStart'));
                 } else {
-                    this.updateAnalysisPanel('--', 'Video File Mode', 'Upload a video file for motion analysis');
+                    this.updateAnalysisPanel('--', this.getText('videoFileMode'), this.getText('uploadForAnalysis'));
                 }
             }
             
             async handleFileUpload(file) {
                 if (!file || !file.type.startsWith('video/')) {
-                    this.showError('Please select a valid video file');
+                    this.showError(langManager.getText('selectVideo'));
                     return;
                 }
                 
                 if (file.size > 50 * 1024 * 1024) { // 50MB limit
-                    this.showError('File size cannot exceed 50MB');
+                    this.showError(langManager.getText('fileSizeLimit'));
                     return;
                 }
                 
@@ -996,7 +1277,8 @@
                         this.uploadCanvasElement.height = this.uploadVideoElement.videoHeight;
                         
                         this.updateTimeDisplay();
-                        this.updateAnalysisPanel('--', 'Video Loaded', 'Click analyze button to process the video');
+                        this.updateAnalysisPanel('--', langManager.getText('videoLoaded'), 
+                            langManager.getText('uploadForAnalysis').replace('Upload a video file for motion analysis', 'Click analyze button to process the video'));
                     };
                     
                     // Video time update
@@ -1006,7 +1288,7 @@
                     });
                     
                 } catch (error) {
-                    this.showError('Failed to load video: ' + error.message);
+                    this.showError(langManager.getText('loadFailed') + error.message);
                 }
             }
             
@@ -1016,10 +1298,10 @@
                 
                 if (video.paused) {
                     video.play();
-                    btn.textContent = '⏸️ Pause';
+                    btn.textContent = langManager.getText('pause');
                 } else {
                     video.pause();
-                    btn.textContent = '▶️ Play';
+                    btn.textContent = langManager.getText('play');
                 }
             }
             
@@ -1056,13 +1338,13 @@
                 document.getElementById('analysisProgress').classList.remove('show');
                 document.getElementById('fileInput').value = '';
                 
-                this.updateAnalysisPanel('--', 'Video File Mode', 'Upload a video file for motion analysis');
+                this.updateAnalysisPanel('--', langManager.getText('videoFileMode'), langManager.getText('uploadForAnalysis'));
                 this.resetMetrics();
             }
             
             async analyzeUploadedVideo() {
                 if (!this.uploadVideoElement.src) {
-                    this.showError('Please upload a video file first');
+                    this.showError(langManager.getText('uploadFirst'));
                     return;
                 }
                 
@@ -1078,7 +1360,7 @@
                 try {
                     await this.processVideoFrames();
                 } catch (error) {
-                    this.showError('Video analysis failed: ' + error.message);
+                    this.showError(langManager.getText('videoAnalysisFailed') + error.message);
                 } finally {
                     this.isAnalyzing = false;
                     document.getElementById('analysisProgress').classList.remove('show');
@@ -1153,7 +1435,7 @@
             
             calculateFinalResults(results) {
                 if (this.poseHistory.length === 0) {
-                    this.showError('No valid motion data detected. Please ensure the video shows clear human movements');
+                    this.showError(langManager.getText('noValidData'));
                     return;
                 }
                 
@@ -1190,14 +1472,14 @@
                     
                     this.updateAnalysisPanel(
                         overallScore,
-                        'Video Analysis Complete',
-                        `Analyzed ${validFrames} frames, ${this.getAnalysisDescription(overallScore)}`
+                        langManager.getText('videoAnalysisComplete'),
+                        `${langManager.currentLang === 'zh' ? '共分析' : 'Analyzed'} ${validFrames} ${langManager.currentLang === 'zh' ? '帧，' : 'frames, '}${this.getAnalysisDescription(overallScore)}`
                     );
                     
                     this.updateMetrics();
                     this.updateSuggestions(this.generateSuggestions());
                 } else {
-                    this.showError('No valid movements found in video. Please upload a video with clear human motion');
+                    this.showError(langManager.getText('noValidMovements'));
                 }
             }
             
@@ -1214,11 +1496,11 @@
                 if (this.isUploadMode) return;
                 
                 try {
-                    this.updateStatus('Starting camera...');
+                    this.updateStatus('startingCamera');
                     await this.startCameraStream();
                     
                     this.isAnalyzing = true;
-                    this.updateStatus('Analyzing...');
+                    this.updateStatus('analyzing');
                     this.updateButtons(false);
                     document.getElementById('cameraSwitchBtn').classList.add('show');
                     document.getElementById('cameraIndicator').classList.add('show');
@@ -1226,7 +1508,7 @@
                     this.startAnalysisLoop();
                     
                 } catch (error) {
-                    this.showError('Cannot access camera: ' + error.message);
+                    this.showError(langManager.getText('cameraAccess') + error.message);
                 }
             }
             
@@ -1259,7 +1541,7 @@
             
             stopAnalysis() {
                 this.isAnalyzing = false;
-                this.updateStatus('Stopped');
+                this.updateStatus('stopped');
                 this.updateButtons(true);
                 document.getElementById('cameraSwitchBtn').classList.remove('show');
                 document.getElementById('cameraIndicator').classList.remove('show');
@@ -1289,14 +1571,14 @@
                     this.videoElement.style.display = 'none';
                     document.getElementById('placeholder').style.display = 'block';
                     this.canvasCtx.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height);
-                    this.updateAnalysisPanel('--', 'Live Camera Mode', 'Click start to begin real-time motion analysis');
+                    this.updateAnalysisPanel('--', langManager.getText('liveCameraMode'), langManager.getText('clickToStart'));
                 } else {
                     this.clearVideo();
                 }
                 
                 this.resetMetrics();
-                this.updateSuggestions([{text: 'Select analysis mode to see motion suggestions'}]);
-                this.updateStatus('Ready');
+                this.updateSuggestions([{text: langManager.getText('selectModeForSuggestions')}]);
+                this.updateStatus('ready');
                 this.updateCameraIndicator();
             }
             
@@ -1404,7 +1686,7 @@
                 
                 this.updateAnalysisPanel(
                     overallScore,
-                    'Real-time Motion Analysis',
+                    langManager.getText('realTimeAnalysis'),
                     this.getAnalysisDescription(overallScore)
                 );
                 
@@ -1530,34 +1812,34 @@
                 const metrics = this.currentMetrics;
                 
                 if (metrics.stability < 70) {
-                    suggestions.push({text: 'Keep your body center stable, maintain firm footing'});
+                    suggestions.push({text: this.getText('keepStable')});
                 }
                 
                 if (metrics.fluidity < 70) {
-                    suggestions.push({text: 'Make your movements more fluid, avoid sudden stops'});
+                    suggestions.push({text: this.getText('makeFluid')});
                 }
                 
                 if (metrics.coordination < 70) {
-                    suggestions.push({text: 'Focus on coordinating all body parts together'});
+                    suggestions.push({text: this.getText('focusCoordination')});
                 }
                 
                 if (metrics.accuracy < 70) {
-                    suggestions.push({text: 'Improve stroke technique, extend arms fully'});
+                    suggestions.push({text: this.getText('improveStroke')});
                 }
                 
                 if (suggestions.length === 0) {
-                    suggestions.push({text: 'Great technique! Keep it up!'});
+                    suggestions.push({text: this.getText('greatTechnique')});
                 }
                 
                 return suggestions;
             }
             
             getAnalysisDescription(score) {
-                if (score >= 90) return 'Excellent technique, keep it up!';
-                if (score >= 80) return 'Good form, continue refining details';
-                if (score >= 70) return 'Basic technique correct, needs improvement';
-                if (score >= 60) return 'Technique needs adjustment, follow suggestions';
-                return 'Recommend studying tutorial videos for basic techniques';
+                if (score >= 90) return this.getText('excellentTechnique');
+                if (score >= 80) return this.getText('goodForm');
+                if (score >= 70) return this.getText('basicCorrect');
+                if (score >= 60) return this.getText('needsAdjustment');
+                return this.getText('studyTutorials');
             }
             
             updateAnalysisPanel(score, title, description) {
@@ -1615,14 +1897,14 @@
                 });
             }
             
-            updateStatus(status) {
+            updateStatus(statusKey) {
                 const indicator = document.getElementById('statusIndicator');
-                indicator.textContent = status;
+                indicator.textContent = this.getText(statusKey);
                 
-                if (status.includes('Analyzing')) {
+                if (statusKey.includes('analyzing')) {
                     indicator.style.background = 'rgba(237, 137, 54, 0.1)';
                     indicator.style.color = '#ed8936';
-                } else if (status.includes('Ready')) {
+                } else if (statusKey.includes('ready')) {
                     indicator.style.background = 'rgba(72, 187, 120, 0.1)';
                     indicator.style.color = '#38a169';
                 } else {
