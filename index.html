@@ -138,21 +138,7 @@
             display: flex;
             align-items: center;
             gap: 8px;
-        }
-        
-        .technique-metrics {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 8px;
-        }
-        
-        .metric-preview {
-            background: rgba(255, 255, 255, 0.8);
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 13px;
-            color: #4a5568;
-            border-left: 3px solid #667eea;
+            justify-content: center;
         }
         
         .analysis-disabled {
@@ -964,11 +950,11 @@
             <div class="selected-technique-info" id="selectedTechniqueInfo">
                 <h4 id="selectedTechniqueName">
                     <span>🎾</span>
-                    <span data-text="selectedTechniqueTitle">Selected: Serve</span>
+                    <span data-text="selectedTechniqueTitle">Analysis Focus</span>
                 </h4>
-                <div class="technique-metrics" id="techniqueMetrics">
-                    <!-- Dynamic metrics will be inserted here -->
-                </div>
+                <p style="color: #4a5568; font-size: 14px; text-align: center; margin-top: 8px;" data-text="techniqueSelectedDesc">
+                    Analysis metrics will update to focus on this specific technique
+                </p>
             </div>
         </div>
         
