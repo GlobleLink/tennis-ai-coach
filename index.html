@@ -1417,9 +1417,10 @@
                 
                 this.updateInterface();
                 
-                // Notify tennis analyzer about language change
+                // Update analysis metrics if a technique is selected
                 if (window.tennisAnalyzer && window.tennisAnalyzer.selectedTechnique) {
                     window.tennisAnalyzer.updateAnalysisMetrics(window.tennisAnalyzer.selectedTechnique);
+                    window.tennisAnalyzer.updateTechniqueInfo(window.tennisAnalyzer.selectedTechnique);
                 }
             }
 
@@ -1492,7 +1493,15 @@
             
             // Helper method for getting translated text
             getText(key) {
-                return this.langManager ? this.langManager.getText(key) : key;
+                if (this.langManager && this.langManager.getText) {
+                    return this.langManager.getText(key);
+                }
+                // Fallback to window.langManager if this.langManager is not available
+                if (window.langManager && window.langManager.getText) {
+                    return window.langManager.getText(key);
+                }
+                // Final fallback: return the key itself
+                return key;
             }
             
             selectTechnique(technique) {
@@ -1515,6 +1524,9 @@
                 
                 // Hide selection required warning
                 document.getElementById('selectionRequired').classList.remove('show');
+                
+                // Immediately update analysis panel with technique-specific metrics
+                this.updateAnalysisMetrics(technique);
             }
             
             updateTechniqueInfo(technique) {
@@ -1538,9 +1550,6 @@
                 
                 // Show the info panel
                 infoPanel.classList.add('show');
-                
-                // Update analysis panel metrics labels
-                this.updateAnalysisMetrics(technique);
             }
             
             updateAnalysisMetrics(technique) {
@@ -1548,9 +1557,13 @@
                 const metricItems = document.querySelectorAll('.metric-item');
                 
                 metricItems.forEach((item, index) => {
-                    if (index < metrics.length) {
-                        const label = item.querySelector('.metric-label');
-                        label.textContent = this.getText(metrics[index]);
+                    const label = item.querySelector('.metric-label');
+                    
+                    if (index < metrics.length && metrics[index]) {
+                        // Get translated text using langManager directly
+                        const metricKey = metrics[index];
+                        const translatedText = this.langManager ? this.langManager.getText(metricKey) : metricKey;
+                        label.textContent = translatedText;
                         item.style.display = 'flex';
                     } else {
                         // Hide extra metric items if technique has less than 4 metrics
@@ -2237,16 +2250,19 @@
                 const rightElbow = landmarks[14];
                 const rightWrist = landmarks[16];
                 
-                if (!rightShoulder || !rightElbow || !rightWrist) return 50;
+                if (!rightShoulder || !rightElbow || !rightWrist) return 65;
                 
                 const armAngle = this.calculateAngle(rightShoulder, rightElbow, rightWrist);
-                const stability = Math.max(0, 100 - Math.abs(armAngle - 140) * 2);
-                return Math.min(100, stability);
+                if (isNaN(armAngle) || armAngle === 0) return 65;
+                
+                const stability = Math.max(40, 100 - Math.abs(armAngle - 140) * 1.5);
+                return Math.min(95, stability);
             }
             
             calculateLandingAccuracy(landmarks) {
                 // Simplified: measure body balance after serve
-                return this.calculateStability(landmarks);
+                const stability = this.calculateStability(landmarks);
+                return Math.max(45, Math.min(90, stability + 15));
             }
             
             // Forehand-specific calculations
@@ -2255,10 +2271,13 @@
                 const leftShoulder = landmarks[11];
                 const rightShoulder = landmarks[12];
                 
-                if (!leftShoulder || !rightShoulder) return 50;
+                if (!leftShoulder || !rightShoulder) return 60;
                 
-                const shoulderAngle = Math.abs(leftShoulder.y - rightShoulder.y) * 100;
-                return Math.max(0, Math.min(100, 80 + shoulderAngle));
+                const shoulderDiff = Math.abs(leftShoulder.y - rightShoulder.y);
+                if (isNaN(shoulderDiff)) return 60;
+                
+                const score = Math.max(45, Math.min(90, 70 + shoulderDiff * 80));
+                return score;
             }
             
             calculateContactPointPosition(landmarks) {
@@ -2266,15 +2285,18 @@
                 const rightShoulder = landmarks[12];
                 const rightWrist = landmarks[16];
                 
-                if (!rightShoulder || !rightWrist) return 50;
+                if (!rightShoulder || !rightWrist) return 55;
                 
                 const extension = this.calculateDistance(rightShoulder, rightWrist);
-                return Math.max(0, Math.min(100, extension * 300));
+                if (isNaN(extension) || extension === 0) return 55;
+                
+                return Math.max(40, Math.min(85, extension * 200 + 50));
             }
             
             calculateFollowThrough(landmarks) {
                 // Measure follow-through motion fluidity
-                return this.calculateFluidity();
+                const fluidity = this.calculateFluidity();
+                return Math.max(50, Math.min(90, fluidity + 10));
             }
             
             // Backhand-specific calculations
@@ -2283,20 +2305,24 @@
                 const leftWrist = landmarks[15];
                 const leftElbow = landmarks[13];
                 
-                if (!leftWrist || !leftElbow) return 50;
+                if (!leftWrist || !leftElbow) return 60;
                 
-                const alignment = Math.abs(leftWrist.x - leftElbow.x) * 100;
-                return Math.max(0, Math.min(100, 90 - alignment));
+                const alignment = Math.abs(leftWrist.x - leftElbow.x);
+                if (isNaN(alignment)) return 60;
+                
+                return Math.max(45, Math.min(85, 80 - alignment * 50));
             }
             
             calculateWeightTransfer(landmarks) {
                 // Measure hip and shoulder coordination
-                return this.calculateCoordination(landmarks);
+                const coordination = this.calculateCoordination(landmarks);
+                return Math.max(50, Math.min(90, coordination + 5));
             }
             
             calculateContactPointControl(landmarks) {
                 // Measure contact point consistency
-                return this.calculateAccuracy(landmarks);
+                const accuracy = this.calculateAccuracy(landmarks);
+                return Math.max(45, Math.min(85, accuracy + 10));
             }
             
             // Volley-specific calculations
@@ -2305,15 +2331,18 @@
                 const leftAnkle = landmarks[27];
                 const rightAnkle = landmarks[28];
                 
-                if (!leftAnkle || !rightAnkle) return 50;
+                if (!leftAnkle || !rightAnkle) return 65;
                 
                 const footPosition = this.calculateDistance(leftAnkle, rightAnkle);
-                return Math.max(0, Math.min(100, footPosition * 200 + 60));
+                if (isNaN(footPosition) || footPosition === 0) return 65;
+                
+                return Math.max(50, Math.min(85, footPosition * 100 + 60));
             }
             
             calculateRacketFaceControl(landmarks) {
                 // Measure arm positioning for racket control
-                return this.calculateAccuracy(landmarks);
+                const accuracy = this.calculateAccuracy(landmarks);
+                return Math.max(55, Math.min(90, accuracy + 15));
             }
             
             calculateContactPointHeight(landmarks) {
@@ -2321,10 +2350,12 @@
                 const rightWrist = landmarks[16];
                 const rightShoulder = landmarks[12];
                 
-                if (!rightWrist || !rightShoulder) return 50;
+                if (!rightWrist || !rightShoulder) return 60;
                 
-                const height = Math.abs(rightWrist.y - rightShoulder.y) * 100;
-                return Math.max(0, Math.min(100, 90 - height));
+                const heightDiff = Math.abs(rightWrist.y - rightShoulder.y);
+                if (isNaN(heightDiff)) return 60;
+                
+                return Math.max(50, Math.min(85, 80 - heightDiff * 30));
             }
             
             // Slice-specific calculations
@@ -2333,26 +2364,30 @@
                 const rightWrist = landmarks[16];
                 const rightElbow = landmarks[14];
                 
-                if (!rightWrist || !rightElbow) return 50;
+                if (!rightWrist || !rightElbow) return 65;
                 
-                const angle = Math.abs(rightWrist.y - rightElbow.y) * 150;
-                return Math.max(0, Math.min(100, 80 + angle));
+                const angleDiff = Math.abs(rightWrist.y - rightElbow.y);
+                if (isNaN(angleDiff)) return 65;
+                
+                return Math.max(50, Math.min(85, 70 + angleDiff * 40));
             }
             
             calculateSwingTrajectory(landmarks) {
                 // Measure swing path consistency
-                return this.calculateFluidity();
+                const fluidity = this.calculateFluidity();
+                return Math.max(55, Math.min(90, fluidity + 12));
             }
             
             calculateSpinConsistency(landmarks) {
                 // Measure motion consistency for spin generation
-                return this.calculateStability(landmarks);
+                const stability = this.calculateStability(landmarks);
+                return Math.max(50, Math.min(85, stability + 8));
             }
             
             // Overhead-specific calculations
             calculateFootworkSpeed(landmarks) {
                 // Measure quick positioning for overhead
-                if (this.poseHistory.length < 5) return 50;
+                if (this.poseHistory.length < 5) return 70;
                 
                 const recent = this.poseHistory.slice(-5);
                 let movement = 0;
@@ -2366,7 +2401,8 @@
                     }
                 }
                 
-                return Math.max(0, Math.min(100, movement * 1000 + 70));
+                if (isNaN(movement) || movement === 0) return 70;
+                return Math.max(55, Math.min(90, movement * 500 + 65));
             }
             
             calculateContactHeight(landmarks) {
@@ -2374,17 +2410,20 @@
                 const rightWrist = landmarks[16];
                 const nose = landmarks[0];
                 
-                if (!rightWrist || !nose) return 50;
+                if (!rightWrist || !nose) return 60;
                 
                 const height = nose.y - rightWrist.y;
-                return Math.max(0, Math.min(100, height * 200 + 60));
+                if (isNaN(height)) return 60;
+                
+                return Math.max(45, Math.min(85, Math.abs(height) * 150 + 55));
             }
             
             calculatePowerControl(landmarks) {
                 // Measure power and control balance
                 const power = this.calculateCoordination(landmarks);
                 const control = this.calculateAccuracy(landmarks);
-                return (power + control) / 2;
+                const combined = (power + control) / 2;
+                return Math.max(50, Math.min(88, combined + 5));
             }
             
             // Base calculation methods (reused from original)
@@ -2605,20 +2644,53 @@
                 const suggestions = [];
                 const metrics = this.currentMetrics;
                 
-                if (metrics.stability < 70) {
-                    suggestions.push({text: this.getText('keepStable')});
+                // Generate suggestions based on selected technique and metrics
+                if (!this.selectedTechnique) {
+                    suggestions.push({text: this.getText('selectModeForSuggestions')});
+                    return suggestions;
                 }
                 
-                if (metrics.fluidity < 70) {
-                    suggestions.push({text: this.getText('makeFluid')});
-                }
-                
-                if (metrics.coordination < 70) {
-                    suggestions.push({text: this.getText('focusCoordination')});
-                }
-                
-                if (metrics.accuracy < 70) {
-                    suggestions.push({text: this.getText('improveStroke')});
+                // Technique-specific suggestions based on low scores
+                switch (this.selectedTechnique) {
+                    case 'serve':
+                        if (metrics.metric1 < 70) suggestions.push({text: this.getText('improveTossStability') || '保持抛球动作稳定，练习一致的抛球高度'});
+                        if (metrics.metric2 < 70) suggestions.push({text: this.getText('improveBodyCoordination') || '加强身体协调性，注意腿部蹬地与手臂配合'});
+                        if (metrics.metric3 < 70) suggestions.push({text: this.getText('improveLandingAccuracy') || '发球后保持身体平衡，控制落地稳定性'});
+                        break;
+                    
+                    case 'forehand':
+                        if (metrics.metric1 < 70) suggestions.push({text: this.getText('improvePreparation') || '准备动作要更充分，引拍幅度适当'});
+                        if (metrics.metric2 < 70) suggestions.push({text: this.getText('improveContactPoint') || '击球点位置需要调整，保持在身体前方'});
+                        if (metrics.metric3 < 70) suggestions.push({text: this.getText('improveFollowThrough') || '随挥动作要完整，保持动作流畅性'});
+                        break;
+                    
+                    case 'backhand':
+                        if (metrics.metric1 < 70) suggestions.push({text: this.getText('improveGrip') || '检查握拍姿势，确保手腕稳定'});
+                        if (metrics.metric2 < 70) suggestions.push({text: this.getText('improveWeightTransfer') || '注意重心转移，从后脚到前脚'});
+                        if (metrics.metric3 < 70) suggestions.push({text: this.getText('improveBackhandContact') || '反手击球点控制需要加强练习'});
+                        break;
+                    
+                    case 'volley':
+                        if (metrics.metric1 < 70) suggestions.push({text: this.getText('improveFootwork') || '截击时步伐调整要更快速准确'});
+                        if (metrics.metric2 < 70) suggestions.push({text: this.getText('improveRacketFace') || '注意拍面控制，保持稳定的击球角度'});
+                        if (metrics.metric3 < 70) suggestions.push({text: this.getText('improveVolleyHeight') || '截击球高度控制需要改进'});
+                        break;
+                    
+                    case 'slice':
+                        if (metrics.metric1 < 70) suggestions.push({text: this.getText('improveSliceAngle') || '切削球拍面角度需要调整'});
+                        if (metrics.metric2 < 70) suggestions.push({text: this.getText('improveSliceTrajectory') || '挥拍轨迹要更加稳定'});
+                        if (metrics.metric3 < 70) suggestions.push({text: this.getText('improveSpinConsistency') || '旋转一致性需要加强练习'});
+                        break;
+                    
+                    case 'overhead':
+                        if (metrics.metric1 < 70) suggestions.push({text: this.getText('improveOverheadFootwork') || '高压球移动速度需要提高'});
+                        if (metrics.metric2 < 70) suggestions.push({text: this.getText('improveContactHeight') || '击球高度位置需要调整'});
+                        if (metrics.metric3 < 70) suggestions.push({text: this.getText('improvePowerControl') || '力量与控制的平衡需要改进'});
+                        break;
+                    
+                    default:
+                        if (metrics.overall < 70) suggestions.push({text: this.getText('improveStroke')});
+                        break;
                 }
                 
                 if (suggestions.length === 0) {
@@ -2663,20 +2735,25 @@
                         
                         if (index < techniqueMetricKeys.length) {
                             const metricKey = `metric${index + 1}`;
-                            const value = metrics[metricKey] || 0;
+                            const value = metrics[metricKey] !== undefined ? metrics[metricKey] : 0;
                             
                             valueElement.textContent = value;
-                            fillElement.style.width = `${value}%`;
+                            fillElement.style.width = `${Math.max(0, Math.min(100, value))}%`;
+                            item.style.display = 'flex';
+                        } else {
+                            // Hide extra metrics if technique has less than 4 metrics
+                            item.style.display = 'none';
                         }
                     });
                 } else {
-                    // Fallback to default display
+                    // Fallback to default display when no technique is selected
                     metricItems.forEach((item, index) => {
                         const valueElement = item.querySelector('.metric-value');
                         const fillElement = item.querySelector('.metric-fill');
                         
                         valueElement.textContent = '--';
                         fillElement.style.width = '0%';
+                        item.style.display = 'flex';
                     });
                 }
             }
@@ -2692,19 +2769,21 @@
                     fillElement.style.width = '0%';
                 });
                 
-                // Reset all metric items to be visible with default labels when no technique is selected
+                // Reset metric labels based on current selection
                 if (!this.selectedTechnique) {
+                    // Show default labels when no technique is selected
                     metricItems.forEach((item, index) => {
                         const label = item.querySelector('.metric-label');
                         const defaultLabels = ['postureStability', 'motionFluidity', 'coordination', 'technicalAccuracy'];
                         
                         if (index < defaultLabels.length) {
-                            label.textContent = this.getText(defaultLabels[index]);
+                            const translatedText = this.langManager ? this.langManager.getText(defaultLabels[index]) : defaultLabels[index];
+                            label.textContent = translatedText;
                             item.style.display = 'flex';
                         }
                     });
                 } else {
-                    // Keep technique-specific labels if technique is selected
+                    // Keep technique-specific labels but reset values
                     this.updateAnalysisMetrics(this.selectedTechnique);
                 }
             }
