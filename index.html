@@ -67,16 +67,40 @@
             height: 400px;
             margin-bottom: 15px;
             overflow: hidden;
+            max-width: 100%;
         }
         
         #videoElement {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
+            border-radius: 12px;
+        }
+        
+        #uploadVideoElement {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            border-radius: 12px;
+        }
+        
+        #uploadVideoElement {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
             border-radius: 12px;
         }
         
         #canvasElement {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        
+        #uploadCanvasElement {
             position: absolute;
             top: 0;
             left: 0;
@@ -92,7 +116,15 @@
             transform: translate(-50%, -50%);
             color: #a0aec0;
             text-align: center;
-            font-size: 18px;
+            font-size: 16px;
+            max-width: 90%;
+            padding: 20px;
+        }
+        
+        .video-placeholder small {
+            font-size: 12px;
+            display: block;
+            margin-top: 8px;
         }
         
         .camera-controls {
@@ -539,7 +571,8 @@
             }
             
             .video-container {
-                height: 300px;
+                height: 250px;
+                max-height: 50vh;
             }
             
             .mode-tabs {
@@ -549,6 +582,65 @@
             .camera-switch-btn {
                 font-size: 11px;
                 padding: 6px 10px;
+            }
+            
+            .app-container {
+                padding: 10px;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .header .subtitle {
+                font-size: 14px;
+            }
+            
+            .analysis-panel {
+                padding: 15px;
+            }
+            
+            .video-section {
+                padding: 15px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .video-container {
+                height: 200px;
+                max-height: 40vh;
+            }
+            
+            .score-circle {
+                width: 100px;
+                height: 100px;
+            }
+            
+            .score-inner {
+                width: 75px;
+                height: 75px;
+            }
+            
+            .score-number {
+                font-size: 24px;
+            }
+            
+            .btn {
+                padding: 6px 10px;
+                font-size: 11px;
+            }
+            
+            .metric-bar {
+                width: 60px;
+            }
+            
+            .video-placeholder {
+                font-size: 14px;
+                padding: 15px;
+            }
+            
+            .video-placeholder small {
+                font-size: 11px;
             }
         }
     </style>
@@ -617,7 +709,7 @@
                     
                     <div class="video-container" id="uploadVideoContainer" style="display: none;">
                         <div class="status-indicator" id="uploadStatusIndicator">Video Loaded</div>
-                        <video id="uploadVideoElement" controls style="width: 100%; height: 100%; object-fit: cover;"></video>
+                        <video id="uploadVideoElement" controls></video>
                         <canvas id="uploadCanvasElement"></canvas>
                     </div>
                     
