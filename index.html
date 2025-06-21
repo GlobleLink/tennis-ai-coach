@@ -1062,38 +1062,38 @@
                 
                 <div class="metrics">
                     <div class="metric-item">
-                        <span class="metric-label" data-text="postureStability">Posture Stability</span>
+                        <span class="metric-label">Posture Stability</span>
                         <div style="display: flex; align-items: center;">
-                            <span class="metric-value" id="stabilityValue">--</span>
+                            <span class="metric-value">--</span>
                             <div class="metric-bar">
-                                <div class="metric-fill" id="stabilityFill"></div>
+                                <div class="metric-fill"></div>
                             </div>
                         </div>
                     </div>
                     <div class="metric-item">
-                        <span class="metric-label" data-text="motionFluidity">Motion Fluidity</span>
+                        <span class="metric-label">Motion Fluidity</span>
                         <div style="display: flex; align-items: center;">
-                            <span class="metric-value" id="fluidityValue">--</span>
+                            <span class="metric-value">--</span>
                             <div class="metric-bar">
-                                <div class="metric-fill" id="fluidityFill"></div>
+                                <div class="metric-fill"></div>
                             </div>
                         </div>
                     </div>
                     <div class="metric-item">
-                        <span class="metric-label" data-text="coordination">Coordination</span>
+                        <span class="metric-label">Coordination</span>
                         <div style="display: flex; align-items: center;">
-                            <span class="metric-value" id="coordinationValue">--</span>
+                            <span class="metric-value">--</span>
                             <div class="metric-bar">
-                                <div class="metric-fill" id="coordinationFill"></div>
+                                <div class="metric-fill"></div>
                             </div>
                         </div>
                     </div>
                     <div class="metric-item">
-                        <span class="metric-label" data-text="technicalAccuracy">Technical Accuracy</span>
+                        <span class="metric-label">Technical Accuracy</span>
                         <div style="display: flex; align-items: center;">
-                            <span class="metric-value" id="accuracyValue">--</span>
+                            <span class="metric-value">--</span>
                             <div class="metric-bar">
-                                <div class="metric-fill" id="accuracyFill"></div>
+                                <div class="metric-fill"></div>
                             </div>
                         </div>
                     </div>
@@ -1142,6 +1142,7 @@
                 overheadEn: '高压球',
                 selectedTechniqueTitle: 'Analysis Focus',
                 techniqueRequired: '⚠️ Please select a tennis technique above before starting analysis',
+                techniqueSelectedDesc: 'Analysis metrics will update to focus on this specific technique',
                 
                 liveCameraTab: '📹 Live Camera',
                 uploadVideoTab: '📁 Upload Video',
@@ -1269,6 +1270,7 @@
                 overheadEn: 'Overhead Smash',
                 selectedTechniqueTitle: '分析重点',
                 techniqueRequired: '⚠️ 请先在上方选择一个网球技术动作再开始分析',
+                techniqueSelectedDesc: '分析指标将更新为专注于此特定技术动作',
                 
                 liveCameraTab: '📹 实时摄像头',
                 uploadVideoTab: '📁 上传视频',
@@ -1414,6 +1416,11 @@
                 });
                 
                 this.updateInterface();
+                
+                // Notify tennis analyzer about language change
+                if (window.tennisAnalyzer && window.tennisAnalyzer.selectedTechnique) {
+                    window.tennisAnalyzer.updateAnalysisMetrics(window.tennisAnalyzer.selectedTechnique);
+                }
             }
 
             updateInterface() {
@@ -1513,7 +1520,6 @@
             updateTechniqueInfo(technique) {
                 const infoPanel = document.getElementById('selectedTechniqueInfo');
                 const nameElement = document.getElementById('selectedTechniqueName');
-                const metricsContainer = document.getElementById('techniqueMetrics');
                 
                 // Update technique name and icon
                 const icons = {
@@ -1530,21 +1536,10 @@
                     <span>${this.getText('selectedTechniqueTitle')}: ${this.getText(technique)}</span>
                 `;
                 
-                // Update metrics display
-                const metrics = this.techniqueMetrics[technique];
-                metricsContainer.innerHTML = '';
-                
-                metrics.forEach(metricKey => {
-                    const metricDiv = document.createElement('div');
-                    metricDiv.className = 'metric-preview';
-                    metricDiv.textContent = this.getText(metricKey);
-                    metricsContainer.appendChild(metricDiv);
-                });
-                
                 // Show the info panel
                 infoPanel.classList.add('show');
                 
-                // Update analysis panel metrics
+                // Update analysis panel metrics labels
                 this.updateAnalysisMetrics(technique);
             }
             
@@ -1558,6 +1553,7 @@
                         label.textContent = this.getText(metrics[index]);
                         item.style.display = 'flex';
                     } else {
+                        // Hide extra metric items if technique has less than 4 metrics
                         item.style.display = 'none';
                     }
                 });
@@ -2696,16 +2692,21 @@
                     fillElement.style.width = '0%';
                 });
                 
-                // Reset all metric items to be visible with default labels
-                metricItems.forEach((item, index) => {
-                    const label = item.querySelector('.metric-label');
-                    const defaultLabels = ['postureStability', 'motionFluidity', 'coordination', 'technicalAccuracy'];
-                    
-                    if (index < defaultLabels.length) {
-                        label.textContent = this.getText(defaultLabels[index]);
-                        item.style.display = 'flex';
-                    }
-                });
+                // Reset all metric items to be visible with default labels when no technique is selected
+                if (!this.selectedTechnique) {
+                    metricItems.forEach((item, index) => {
+                        const label = item.querySelector('.metric-label');
+                        const defaultLabels = ['postureStability', 'motionFluidity', 'coordination', 'technicalAccuracy'];
+                        
+                        if (index < defaultLabels.length) {
+                            label.textContent = this.getText(defaultLabels[index]);
+                            item.style.display = 'flex';
+                        }
+                    });
+                } else {
+                    // Keep technique-specific labels if technique is selected
+                    this.updateAnalysisMetrics(this.selectedTechnique);
+                }
             }
             
             updateSuggestions(suggestions) {
