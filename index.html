@@ -35,6 +35,154 @@
             position: relative;
         }
         
+        .technique-selection {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(10px);
+        }
+        
+        .technique-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .technique-header h3 {
+            color: #2d3748;
+            font-size: 18px;
+            margin-bottom: 8px;
+        }
+        
+        .technique-header p {
+            color: #718096;
+            font-size: 14px;
+        }
+        
+        .technique-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .technique-card {
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            position: relative;
+        }
+        
+        .technique-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.15);
+            border-color: #cbd5e0;
+        }
+        
+        .technique-card.selected {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-color: #667eea;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 25px rgba(102, 126, 234, 0.4);
+        }
+        
+        .technique-card.selected .technique-icon {
+            transform: scale(1.1);
+        }
+        
+        .technique-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+            transition: transform 0.3s ease;
+        }
+        
+        .technique-name {
+            font-weight: 600;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+        
+        .technique-name-en {
+            font-size: 11px;
+            opacity: 0.8;
+        }
+        
+        .technique-card.selected .technique-name-en {
+            opacity: 0.9;
+        }
+        
+        .selected-technique-info {
+            background: #e6fffa;
+            border: 1px solid #81e6d9;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .selected-technique-info.show {
+            display: block;
+            animation: fadeInUp 0.3s ease;
+        }
+        
+        .selected-technique-info h4 {
+            color: #2d3748;
+            font-size: 16px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .technique-metrics {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+        }
+        
+        .metric-preview {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            color: #4a5568;
+            border-left: 3px solid #667eea;
+        }
+        
+        .analysis-disabled {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        
+        .selection-required {
+            background: #fed7d7;
+            border: 1px solid #feb2b2;
+            color: #c53030;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            font-size: 14px;
+            margin-bottom: 15px;
+            display: none;
+        }
+        
+        .selection-required.show {
+            display: block;
+            animation: shake 0.5s ease-in-out;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+        
         .language-switch {
             position: absolute;
             top: 15px;
@@ -642,6 +790,31 @@
             .video-section {
                 padding: 15px;
             }
+            
+            .technique-selection {
+                padding: 15px;
+            }
+            
+            .technique-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 10px;
+            }
+            
+            .technique-card {
+                padding: 12px;
+            }
+            
+            .technique-icon {
+                font-size: 20px;
+            }
+            
+            .technique-name {
+                font-size: 13px;
+            }
+            
+            .technique-name-en {
+                font-size: 10px;
+            }
         }
         
         @media (max-width: 480px) {
@@ -692,6 +865,39 @@
                 padding: 4px 8px;
                 font-size: 10px;
             }
+            
+            .technique-selection {
+                padding: 12px;
+            }
+            
+            .technique-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+            }
+            
+            .technique-card {
+                padding: 10px;
+            }
+            
+            .technique-icon {
+                font-size: 18px;
+            }
+            
+            .technique-name {
+                font-size: 12px;
+            }
+            
+            .technique-name-en {
+                font-size: 9px;
+            }
+            
+            .technique-header h3 {
+                font-size: 16px;
+            }
+            
+            .technique-header p {
+                font-size: 12px;
+            }
         }
     </style>
 </head>
@@ -710,10 +916,71 @@
         <!-- Error Message -->
         <div class="error-message" id="errorMessage"></div>
         
+        <!-- Technique Selection -->
+        <div class="technique-selection">
+            <div class="technique-header">
+                <h3 data-text="selectTechnique">Select Tennis Technique</h3>
+                <p data-text="selectTechniqueDesc">Choose the specific technique you want to analyze for more accurate results</p>
+            </div>
+            
+            <div class="technique-grid">
+                <div class="technique-card" data-technique="serve">
+                    <div class="technique-icon">🎾</div>
+                    <div class="technique-name" data-text="serve">Serve</div>
+                    <div class="technique-name-en" data-text="serveEn">发球</div>
+                </div>
+                
+                <div class="technique-card" data-technique="forehand">
+                    <div class="technique-icon">🏸</div>
+                    <div class="technique-name" data-text="forehand">Forehand</div>
+                    <div class="technique-name-en" data-text="forehandEn">正手击球</div>
+                </div>
+                
+                <div class="technique-card" data-technique="backhand">
+                    <div class="technique-icon">🎯</div>
+                    <div class="technique-name" data-text="backhand">Backhand</div>
+                    <div class="technique-name-en" data-text="backhandEn">反手击球</div>
+                </div>
+                
+                <div class="technique-card" data-technique="volley">
+                    <div class="technique-icon">⚡</div>
+                    <div class="technique-name" data-text="volley">Volley</div>
+                    <div class="technique-name-en" data-text="volleyEn">截击球</div>
+                </div>
+                
+                <div class="technique-card" data-technique="slice">
+                    <div class="technique-icon">🌀</div>
+                    <div class="technique-name" data-text="slice">Slice</div>
+                    <div class="technique-name-en" data-text="sliceEn">切削球</div>
+                </div>
+                
+                <div class="technique-card" data-technique="overhead">
+                    <div class="technique-icon">💥</div>
+                    <div class="technique-name" data-text="overhead">Overhead Smash</div>
+                    <div class="technique-name-en" data-text="overheadEn">高压球</div>
+                </div>
+            </div>
+            
+            <div class="selected-technique-info" id="selectedTechniqueInfo">
+                <h4 id="selectedTechniqueName">
+                    <span>🎾</span>
+                    <span data-text="selectedTechniqueTitle">Selected: Serve</span>
+                </h4>
+                <div class="technique-metrics" id="techniqueMetrics">
+                    <!-- Dynamic metrics will be inserted here -->
+                </div>
+            </div>
+        </div>
+        
         <!-- Main Content -->
         <div class="main-content">
             <!-- Video Analysis Section -->
             <div class="video-section">
+                <!-- Selection Required Warning -->
+                <div class="selection-required" id="selectionRequired">
+                    <span data-text="techniqueRequired">⚠️ Please select a tennis technique above before starting analysis</span>
+                </div>
+                
                 <!-- Mode Tabs -->
                 <div class="mode-tabs">
                     <div class="mode-tab active" data-mode="camera" data-text="liveCameraTab">📹 Live Camera</div>
@@ -871,6 +1138,25 @@
             en: {
                 title: '🎾 Tennis AI Coach',
                 subtitle: 'AI-powered tennis technique analysis and coaching - Support live camera and video file analysis',
+                
+                // Technique Selection
+                selectTechnique: 'Select Tennis Technique',
+                selectTechniqueDesc: 'Choose the specific technique you want to analyze for more accurate results',
+                serve: 'Serve',
+                serveEn: '发球',
+                forehand: 'Forehand',
+                forehandEn: '正手击球',
+                backhand: 'Backhand',
+                backhandEn: '反手击球',
+                volley: 'Volley',
+                volleyEn: '截击球',
+                slice: 'Slice',
+                sliceEn: '切削球',
+                overhead: 'Overhead Smash',
+                overheadEn: '高压球',
+                selectedTechniqueTitle: 'Analysis Focus',
+                techniqueRequired: '⚠️ Please select a tennis technique above before starting analysis',
+                
                 liveCameraTab: '📹 Live Camera',
                 uploadVideoTab: '📁 Upload Video',
                 switchCamera: '🔄 Switch Camera',
@@ -894,10 +1180,43 @@
                 overallScore: 'Overall Score',
                 selectAnalysisMode: 'Select Analysis Mode',
                 chooseMode: 'Choose live camera or upload video for motion analysis',
+                
+                // General metrics (fallback)
                 postureStability: 'Posture Stability',
                 motionFluidity: 'Motion Fluidity',
                 coordination: 'Coordination',
                 technicalAccuracy: 'Technical Accuracy',
+                
+                // Serve specific metrics
+                serveMetric1: 'Ball Toss Stability',
+                serveMetric2: 'Body Coordination',
+                serveMetric3: 'Landing Accuracy',
+                
+                // Forehand specific metrics
+                forehandMetric1: 'Preparation & Backswing',
+                forehandMetric2: 'Contact Point Position',
+                forehandMetric3: 'Follow-through Motion',
+                
+                // Backhand specific metrics
+                backhandMetric1: 'Grip Position',
+                backhandMetric2: 'Weight Transfer',
+                backhandMetric3: 'Contact Point Control',
+                
+                // Volley specific metrics
+                volleyMetric1: 'Footwork Adjustment',
+                volleyMetric2: 'Racket Face Control',
+                volleyMetric3: 'Contact Point Height',
+                
+                // Slice specific metrics
+                sliceMetric1: 'Racket Face Angle',
+                sliceMetric2: 'Swing Trajectory',
+                sliceMetric3: 'Spin Consistency',
+                
+                // Overhead specific metrics
+                overheadMetric1: 'Footwork Speed',
+                overheadMetric2: 'Contact Height',
+                overheadMetric3: 'Power & Control',
+                
                 analysisSuggestions: '💡 Analysis Suggestions',
                 selectModeForSuggestions: 'Select analysis mode to see motion suggestions',
                 loadingAI: 'Loading AI model...',
@@ -940,11 +1259,31 @@
                 videoAnalysisFailed: 'Video analysis failed: ',
                 noValidData: 'No valid motion data detected. Please ensure the video shows clear human movements',
                 noValidMovements: 'No valid movements found in video. Please upload a video with clear human motion',
-                loadFailed: 'Failed to load video: '
+                loadFailed: 'Failed to load video: ',
+                selectTechniqueFirst: 'Please select a tennis technique first'
             },
             zh: {
                 title: '🎾 网球智能陪练',
                 subtitle: 'AI驱动的网球技术分析与指导 - 支持实时摄像头和视频文件分析',
+                
+                // Technique Selection
+                selectTechnique: '选择网球技术动作',
+                selectTechniqueDesc: '选择您要分析的具体技术动作，以获得更准确的分析结果',
+                serve: '发球',
+                serveEn: 'Serve',
+                forehand: '正手击球',
+                forehandEn: 'Forehand',
+                backhand: '反手击球',
+                backhandEn: 'Backhand',
+                volley: '截击球',
+                volleyEn: 'Volley',
+                slice: '切削球',
+                sliceEn: 'Slice',
+                overhead: '高压球',
+                overheadEn: 'Overhead Smash',
+                selectedTechniqueTitle: '分析重点',
+                techniqueRequired: '⚠️ 请先在上方选择一个网球技术动作再开始分析',
+                
                 liveCameraTab: '📹 实时摄像头',
                 uploadVideoTab: '📁 上传视频',
                 switchCamera: '🔄 切换摄像头',
@@ -968,10 +1307,43 @@
                 overallScore: '综合评分',
                 selectAnalysisMode: '选择分析模式',
                 chooseMode: '实时摄像头或上传视频进行动作分析',
+                
+                // General metrics (fallback)
                 postureStability: '姿势稳定性',
                 motionFluidity: '动作流畅度',
                 coordination: '协调性',
                 technicalAccuracy: '技术准确性',
+                
+                // Serve specific metrics
+                serveMetric1: '抛球稳定性',
+                serveMetric2: '身体协调性',
+                serveMetric3: '落点精准度',
+                
+                // Forehand specific metrics
+                forehandMetric1: '准备动作和引拍',
+                forehandMetric2: '击球点位置',
+                forehandMetric3: '随挥动作',
+                
+                // Backhand specific metrics
+                backhandMetric1: '握拍姿势',
+                backhandMetric2: '重心控制',
+                backhandMetric3: '击球点控制',
+                
+                // Volley specific metrics
+                volleyMetric1: '步伐调整',
+                volleyMetric2: '拍面控制',
+                volleyMetric3: '击球点高度',
+                
+                // Slice specific metrics
+                sliceMetric1: '拍面角度',
+                sliceMetric2: '挥拍轨迹',
+                sliceMetric3: '球旋转一致性',
+                
+                // Overhead specific metrics
+                overheadMetric1: '步伐速度',
+                overheadMetric2: '击球高度',
+                overheadMetric3: '力量与控制',
+                
                 analysisSuggestions: '💡 分析建议',
                 selectModeForSuggestions: '选择分析模式后将显示动作建议',
                 loadingAI: '正在加载AI模型...',
@@ -1014,7 +1386,8 @@
                 videoAnalysisFailed: '视频分析失败：',
                 noValidData: '未检测到有效的动作数据，请确保视频中有清晰的人体动作',
                 noValidMovements: '视频分析未发现有效动作，请上传包含清晰人体动作的视频',
-                loadFailed: '视频加载失败：'
+                loadFailed: '视频加载失败：',
+                selectTechniqueFirst: '请先选择一个网球技术动作'
             }
         };
 
@@ -1100,15 +1473,26 @@
                 this.frameCount = 0;
                 this.poseHistory = [];
                 this.currentFacingMode = 'user'; // 'user' for front camera, 'environment' for rear camera
+                this.selectedTechnique = null; // Selected tennis technique
                 this.currentMetrics = {
-                    stability: 0,
-                    fluidity: 0,
-                    coordination: 0,
-                    accuracy: 0
+                    metric1: 0,
+                    metric2: 0,
+                    metric3: 0,
+                    overall: 0
                 };
                 
                 // Ensure langManager is available
                 this.langManager = window.langManager;
+                
+                // Technique-specific metrics configuration
+                this.techniqueMetrics = {
+                    serve: ['serveMetric1', 'serveMetric2', 'serveMetric3'],
+                    forehand: ['forehandMetric1', 'forehandMetric2', 'forehandMetric3'],
+                    backhand: ['backhandMetric1', 'backhandMetric2', 'backhandMetric3'],
+                    volley: ['volleyMetric1', 'volleyMetric2', 'volleyMetric3'],
+                    slice: ['sliceMetric1', 'sliceMetric2', 'sliceMetric3'],
+                    overhead: ['overheadMetric1', 'overheadMetric2', 'overheadMetric3']
+                };
                 
                 this.init();
             }
@@ -1116,6 +1500,102 @@
             // Helper method for getting translated text
             getText(key) {
                 return this.langManager ? this.langManager.getText(key) : key;
+            }
+            
+            selectTechnique(technique) {
+                // Remove previous selection
+                document.querySelectorAll('.technique-card').forEach(card => {
+                    card.classList.remove('selected');
+                });
+                
+                // Add selection to clicked card
+                document.querySelector(`[data-technique="${technique}"]`).classList.add('selected');
+                
+                // Update selected technique
+                this.selectedTechnique = technique;
+                
+                // Show technique info
+                this.updateTechniqueInfo(technique);
+                
+                // Enable analysis controls
+                this.enableAnalysisControls();
+                
+                // Hide selection required warning
+                document.getElementById('selectionRequired').classList.remove('show');
+            }
+            
+            updateTechniqueInfo(technique) {
+                const infoPanel = document.getElementById('selectedTechniqueInfo');
+                const nameElement = document.getElementById('selectedTechniqueName');
+                const metricsContainer = document.getElementById('techniqueMetrics');
+                
+                // Update technique name and icon
+                const icons = {
+                    serve: '🎾',
+                    forehand: '🏸',
+                    backhand: '🎯',
+                    volley: '⚡',
+                    slice: '🌀',
+                    overhead: '💥'
+                };
+                
+                nameElement.innerHTML = `
+                    <span>${icons[technique]}</span>
+                    <span>${this.getText('selectedTechniqueTitle')}: ${this.getText(technique)}</span>
+                `;
+                
+                // Update metrics display
+                const metrics = this.techniqueMetrics[technique];
+                metricsContainer.innerHTML = '';
+                
+                metrics.forEach(metricKey => {
+                    const metricDiv = document.createElement('div');
+                    metricDiv.className = 'metric-preview';
+                    metricDiv.textContent = this.getText(metricKey);
+                    metricsContainer.appendChild(metricDiv);
+                });
+                
+                // Show the info panel
+                infoPanel.classList.add('show');
+                
+                // Update analysis panel metrics
+                this.updateAnalysisMetrics(technique);
+            }
+            
+            updateAnalysisMetrics(technique) {
+                const metrics = this.techniqueMetrics[technique];
+                const metricItems = document.querySelectorAll('.metric-item');
+                
+                metricItems.forEach((item, index) => {
+                    if (index < metrics.length) {
+                        const label = item.querySelector('.metric-label');
+                        label.textContent = this.getText(metrics[index]);
+                        item.style.display = 'flex';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+            }
+            
+            enableAnalysisControls() {
+                const videoSection = document.querySelector('.video-section');
+                videoSection.classList.remove('analysis-disabled');
+            }
+            
+            disableAnalysisControls() {
+                const videoSection = document.querySelector('.video-section');
+                videoSection.classList.add('analysis-disabled');
+            }
+            
+            validateTechniqueSelection() {
+                if (!this.selectedTechnique) {
+                    document.getElementById('selectionRequired').classList.add('show');
+                    setTimeout(() => {
+                        document.getElementById('selectionRequired').classList.remove('show');
+                    }, 3000);
+                    return false;
+                }
+                return true;
             }
             
             async init() {
@@ -1153,6 +1633,14 @@
                 // Mode switching
                 document.querySelectorAll('.mode-tab').forEach(tab => {
                     tab.addEventListener('click', (e) => this.switchMode(e.target.dataset.mode));
+                });
+                
+                // Technique selection
+                document.querySelectorAll('.technique-card').forEach(card => {
+                    card.addEventListener('click', (e) => {
+                        const technique = card.dataset.technique;
+                        this.selectTechnique(technique);
+                    });
                 });
                 
                 // Camera mode controls
@@ -1249,6 +1737,11 @@
                     this.updateAnalysisPanel('--', this.getText('liveCameraMode'), this.getText('clickToStart'));
                 } else {
                     this.updateAnalysisPanel('--', this.getText('videoFileMode'), this.getText('uploadForAnalysis'));
+                }
+                
+                // Ensure controls are disabled until technique is selected
+                if (!this.selectedTechnique) {
+                    this.disableAnalysisControls();
                 }
             }
             
@@ -1694,7 +2187,326 @@
                 this.updateSuggestions(this.generateSuggestions());
             }
             
-            // Calculation methods remain the same
+            calculateTechniqueMetrics(landmarks, technique) {
+                // Base calculations that can be reused
+                const stability = this.calculateStability(landmarks);
+                const fluidity = this.calculateFluidity();
+                const coordination = this.calculateCoordination(landmarks);
+                const accuracy = this.calculateAccuracy(landmarks);
+                
+                // Technique-specific calculations
+                switch (technique) {
+                    case 'serve':
+                        return {
+                            metric1: this.calculateBallTossStability(landmarks), // Ball Toss Stability
+                            metric2: coordination, // Body Coordination
+                            metric3: this.calculateLandingAccuracy(landmarks) // Landing Accuracy
+                        };
+                    
+                    case 'forehand':
+                        return {
+                            metric1: this.calculatePreparationBackswing(landmarks), // Preparation & Backswing
+                            metric2: this.calculateContactPointPosition(landmarks), // Contact Point Position
+                            metric3: this.calculateFollowThrough(landmarks) // Follow-through Motion
+                        };
+                    
+                    case 'backhand':
+                        return {
+                            metric1: this.calculateGripPosition(landmarks), // Grip Position
+                            metric2: this.calculateWeightTransfer(landmarks), // Weight Transfer
+                            metric3: this.calculateContactPointControl(landmarks) // Contact Point Control
+                        };
+                    
+                    case 'volley':
+                        return {
+                            metric1: this.calculateFootworkAdjustment(landmarks), // Footwork Adjustment
+                            metric2: this.calculateRacketFaceControl(landmarks), // Racket Face Control
+                            metric3: this.calculateContactPointHeight(landmarks) // Contact Point Height
+                        };
+                    
+                    case 'slice':
+                        return {
+                            metric1: this.calculateRacketFaceAngle(landmarks), // Racket Face Angle
+                            metric2: this.calculateSwingTrajectory(landmarks), // Swing Trajectory
+                            metric3: this.calculateSpinConsistency(landmarks) // Spin Consistency
+                        };
+                    
+                    case 'overhead':
+                        return {
+                            metric1: this.calculateFootworkSpeed(landmarks), // Footwork Speed
+                            metric2: this.calculateContactHeight(landmarks), // Contact Height
+                            metric3: this.calculatePowerControl(landmarks) // Power & Control
+                        };
+                    
+                    default:
+                        // Fallback to general metrics
+                        return {
+                            metric1: stability,
+                            metric2: fluidity,
+                            metric3: coordination
+                        };
+                }
+            }
+            
+            // Serve-specific calculations
+            calculateBallTossStability(landmarks) {
+                // Simplified: measure arm stability during toss motion
+                const rightShoulder = landmarks[12];
+                const rightElbow = landmarks[14];
+                const rightWrist = landmarks[16];
+                
+                if (!rightShoulder || !rightElbow || !rightWrist) return 50;
+                
+                const armAngle = this.calculateAngle(rightShoulder, rightElbow, rightWrist);
+                const stability = Math.max(0, 100 - Math.abs(armAngle - 140) * 2);
+                return Math.min(100, stability);
+            }
+            
+            calculateLandingAccuracy(landmarks) {
+                // Simplified: measure body balance after serve
+                return this.calculateStability(landmarks);
+            }
+            
+            // Forehand-specific calculations
+            calculatePreparationBackswing(landmarks) {
+                // Measure shoulder turn and racket position
+                const leftShoulder = landmarks[11];
+                const rightShoulder = landmarks[12];
+                
+                if (!leftShoulder || !rightShoulder) return 50;
+                
+                const shoulderAngle = Math.abs(leftShoulder.y - rightShoulder.y) * 100;
+                return Math.max(0, Math.min(100, 80 + shoulderAngle));
+            }
+            
+            calculateContactPointPosition(landmarks) {
+                // Measure arm extension at contact
+                const rightShoulder = landmarks[12];
+                const rightWrist = landmarks[16];
+                
+                if (!rightShoulder || !rightWrist) return 50;
+                
+                const extension = this.calculateDistance(rightShoulder, rightWrist);
+                return Math.max(0, Math.min(100, extension * 300));
+            }
+            
+            calculateFollowThrough(landmarks) {
+                // Measure follow-through motion fluidity
+                return this.calculateFluidity();
+            }
+            
+            // Backhand-specific calculations
+            calculateGripPosition(landmarks) {
+                // Simplified: measure wrist alignment
+                const leftWrist = landmarks[15];
+                const leftElbow = landmarks[13];
+                
+                if (!leftWrist || !leftElbow) return 50;
+                
+                const alignment = Math.abs(leftWrist.x - leftElbow.x) * 100;
+                return Math.max(0, Math.min(100, 90 - alignment));
+            }
+            
+            calculateWeightTransfer(landmarks) {
+                // Measure hip and shoulder coordination
+                return this.calculateCoordination(landmarks);
+            }
+            
+            calculateContactPointControl(landmarks) {
+                // Measure contact point consistency
+                return this.calculateAccuracy(landmarks);
+            }
+            
+            // Volley-specific calculations
+            calculateFootworkAdjustment(landmarks) {
+                // Measure leg positioning and movement
+                const leftAnkle = landmarks[27];
+                const rightAnkle = landmarks[28];
+                
+                if (!leftAnkle || !rightAnkle) return 50;
+                
+                const footPosition = this.calculateDistance(leftAnkle, rightAnkle);
+                return Math.max(0, Math.min(100, footPosition * 200 + 60));
+            }
+            
+            calculateRacketFaceControl(landmarks) {
+                // Measure arm positioning for racket control
+                return this.calculateAccuracy(landmarks);
+            }
+            
+            calculateContactPointHeight(landmarks) {
+                // Measure contact point height consistency
+                const rightWrist = landmarks[16];
+                const rightShoulder = landmarks[12];
+                
+                if (!rightWrist || !rightShoulder) return 50;
+                
+                const height = Math.abs(rightWrist.y - rightShoulder.y) * 100;
+                return Math.max(0, Math.min(100, 90 - height));
+            }
+            
+            // Slice-specific calculations
+            calculateRacketFaceAngle(landmarks) {
+                // Measure wrist angle for slice technique
+                const rightWrist = landmarks[16];
+                const rightElbow = landmarks[14];
+                
+                if (!rightWrist || !rightElbow) return 50;
+                
+                const angle = Math.abs(rightWrist.y - rightElbow.y) * 150;
+                return Math.max(0, Math.min(100, 80 + angle));
+            }
+            
+            calculateSwingTrajectory(landmarks) {
+                // Measure swing path consistency
+                return this.calculateFluidity();
+            }
+            
+            calculateSpinConsistency(landmarks) {
+                // Measure motion consistency for spin generation
+                return this.calculateStability(landmarks);
+            }
+            
+            // Overhead-specific calculations
+            calculateFootworkSpeed(landmarks) {
+                // Measure quick positioning for overhead
+                if (this.poseHistory.length < 5) return 50;
+                
+                const recent = this.poseHistory.slice(-5);
+                let movement = 0;
+                
+                for (let i = 1; i < recent.length; i++) {
+                    const prev = recent[i-1][27] || recent[i-1][28]; // ankle
+                    const curr = recent[i][27] || recent[i][28];
+                    
+                    if (prev && curr) {
+                        movement += this.calculateDistance(prev, curr);
+                    }
+                }
+                
+                return Math.max(0, Math.min(100, movement * 1000 + 70));
+            }
+            
+            calculateContactHeight(landmarks) {
+                // Measure overhead contact height
+                const rightWrist = landmarks[16];
+                const nose = landmarks[0];
+                
+                if (!rightWrist || !nose) return 50;
+                
+                const height = nose.y - rightWrist.y;
+                return Math.max(0, Math.min(100, height * 200 + 60));
+            }
+            
+            calculatePowerControl(landmarks) {
+                // Measure power and control balance
+                const power = this.calculateCoordination(landmarks);
+                const control = this.calculateAccuracy(landmarks);
+                return (power + control) / 2;
+            }
+            
+            // Base calculation methods (reused from original)
+            calculateStability(landmarks) {
+                if (this.poseHistory.length < 5) return 50;
+                
+                const centerOfMass = this.getCenterOfMass(landmarks);
+                const recentCenters = this.poseHistory.slice(-5).map(pose => this.getCenterOfMass(pose));
+                
+                let totalVariation = 0;
+                for (let i = 1; i < recentCenters.length; i++) {
+                    const distance = Math.sqrt(
+                        Math.pow(recentCenters[i].x - recentCenters[i-1].x, 2) +
+                        Math.pow(recentCenters[i].y - recentCenters[i-1].y, 2)
+                    );
+                    totalVariation += distance;
+                }
+                
+                const avgVariation = totalVariation / (recentCenters.length - 1);
+                return Math.max(0, 100 - avgVariation * 1000);
+            }
+            
+            calculateFluidity() {
+                if (this.poseHistory.length < 10) return 50;
+                
+                const shoulderAngles = this.poseHistory.slice(-10).map(pose => 
+                    this.calculateAngle(pose[11], pose[13], pose[15])
+                );
+                
+                let smoothness = 0;
+                for (let i = 2; i < shoulderAngles.length; i++) {
+                    const acceleration = shoulderAngles[i] - 2 * shoulderAngles[i-1] + shoulderAngles[i-2];
+                    smoothness += Math.abs(acceleration);
+                }
+                
+                return Math.max(0, 100 - smoothness * 2);
+            }
+            
+            calculateCoordination(landmarks) {
+                const leftArm = this.calculateAngle(landmarks[11], landmarks[13], landmarks[15]);
+                const rightArm = this.calculateAngle(landmarks[12], landmarks[14], landmarks[16]);
+                const torso = this.calculateAngle(landmarks[11], landmarks[23], landmarks[25]);
+                
+                let coordinationScore = 70;
+                
+                const armSymmetry = Math.abs(leftArm - rightArm);
+                if (armSymmetry < 30) coordinationScore += 15;
+                else if (armSymmetry < 60) coordinationScore += 10;
+                
+                if (torso > 160 && torso < 180) coordinationScore += 15;
+                
+                return Math.min(100, coordinationScore);
+            }
+            
+            calculateAccuracy(landmarks) {
+                const wrist = landmarks[16] || landmarks[15];
+                const shoulder = landmarks[12] || landmarks[11];
+                const hip = landmarks[24] || landmarks[23];
+                
+                if (!wrist || !shoulder || !hip) return 50;
+                
+                let accuracyScore = 60;
+                
+                const armExtension = this.calculateDistance(shoulder, wrist);
+                if (armExtension > 0.3) accuracyScore += 20;
+                
+                const balance = Math.abs(shoulder.x - hip.x);
+                if (balance < 0.1) accuracyScore += 20;
+                
+                return Math.min(100, accuracyScore);
+            }
+            
+            getCenterOfMass(landmarks) {
+                const keyPoints = [landmarks[11], landmarks[12], landmarks[23], landmarks[24]];
+                let sumX = 0, sumY = 0, count = 0;
+                
+                keyPoints.forEach(point => {
+                    if (point) {
+                        sumX += point.x;
+                        sumY += point.y;
+                        count++;
+                    }
+                });
+                
+                return { x: sumX / count, y: sumY / count };
+            }
+            
+            calculateAngle(a, b, c) {
+                if (!a || !b || !c) return 0;
+                
+                const ab = Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2));
+                const bc = Math.sqrt(Math.pow(c.x - b.x, 2) + Math.pow(c.y - b.y, 2));
+                const ac = Math.sqrt(Math.pow(c.x - a.x, 2) + Math.pow(c.y - a.y, 2));
+                
+                const cosine = (ab * ab + bc * bc - ac * ac) / (2 * ab * bc);
+                const angle = Math.acos(Math.max(-1, Math.min(1, cosine)));
+                
+                return angle * 180 / Math.PI;
+            }
+            
+            calculateDistance(a, b) {
+                if (!a || !b) return 0;
+                return Math.sqrt(Math.pow(b.x - a.x, 2) + Math.pow(b.y - a.y, 2));
+            }
             calculateStability(landmarks) {
                 if (this.poseHistory.length < 5) return 50;
                 
@@ -1857,28 +2669,57 @@
             
             updateMetrics() {
                 const metrics = this.currentMetrics;
+                const metricItems = document.querySelectorAll('.metric-item');
                 
-                document.getElementById('stabilityValue').textContent = metrics.stability;
-                document.getElementById('fluidityValue').textContent = metrics.fluidity;
-                document.getElementById('coordinationValue').textContent = metrics.coordination;
-                document.getElementById('accuracyValue').textContent = metrics.accuracy;
-                
-                document.getElementById('stabilityFill').style.width = `${metrics.stability}%`;
-                document.getElementById('fluidityFill').style.width = `${metrics.fluidity}%`;
-                document.getElementById('coordinationFill').style.width = `${metrics.coordination}%`;
-                document.getElementById('accuracyFill').style.width = `${metrics.accuracy}%`;
+                // Update only the visible metrics based on selected technique
+                if (this.selectedTechnique && this.techniqueMetrics[this.selectedTechnique]) {
+                    const techniqueMetricKeys = this.techniqueMetrics[this.selectedTechnique];
+                    
+                    metricItems.forEach((item, index) => {
+                        const valueElement = item.querySelector('.metric-value');
+                        const fillElement = item.querySelector('.metric-fill');
+                        
+                        if (index < techniqueMetricKeys.length) {
+                            const metricKey = `metric${index + 1}`;
+                            const value = metrics[metricKey] || 0;
+                            
+                            valueElement.textContent = value;
+                            fillElement.style.width = `${value}%`;
+                        }
+                    });
+                } else {
+                    // Fallback to default display
+                    metricItems.forEach((item, index) => {
+                        const valueElement = item.querySelector('.metric-value');
+                        const fillElement = item.querySelector('.metric-fill');
+                        
+                        valueElement.textContent = '--';
+                        fillElement.style.width = '0%';
+                    });
+                }
             }
             
             resetMetrics() {
-                document.getElementById('stabilityValue').textContent = '--';
-                document.getElementById('fluidityValue').textContent = '--';
-                document.getElementById('coordinationValue').textContent = '--';
-                document.getElementById('accuracyValue').textContent = '--';
+                const metricItems = document.querySelectorAll('.metric-item');
                 
-                document.getElementById('stabilityFill').style.width = '0%';
-                document.getElementById('fluidityFill').style.width = '0%';
-                document.getElementById('coordinationFill').style.width = '0%';
-                document.getElementById('accuracyFill').style.width = '0%';
+                metricItems.forEach(item => {
+                    const valueElement = item.querySelector('.metric-value');
+                    const fillElement = item.querySelector('.metric-fill');
+                    
+                    valueElement.textContent = '--';
+                    fillElement.style.width = '0%';
+                });
+                
+                // Reset all metric items to be visible with default labels
+                metricItems.forEach((item, index) => {
+                    const label = item.querySelector('.metric-label');
+                    const defaultLabels = ['postureStability', 'motionFluidity', 'coordination', 'technicalAccuracy'];
+                    
+                    if (index < defaultLabels.length) {
+                        label.textContent = this.getText(defaultLabels[index]);
+                        item.style.display = 'flex';
+                    }
+                });
             }
             
             updateSuggestions(suggestions) {
