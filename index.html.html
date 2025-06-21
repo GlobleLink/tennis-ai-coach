@@ -65,7 +65,7 @@
             background: #1a202c;
             border-radius: 12px;
             height: 400px;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             overflow: hidden;
         }
         
@@ -95,24 +95,103 @@
             font-size: 18px;
         }
         
+        .upload-area {
+            border: 2px dashed #cbd5e0;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 15px;
+            background: #f7fafc;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .upload-area:hover {
+            border-color: #667eea;
+            background: #edf2f7;
+        }
+        
+        .upload-area.dragover {
+            border-color: #667eea;
+            background: #e6fffa;
+        }
+        
+        #fileInput {
+            display: none;
+        }
+        
+        .upload-icon {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+        
         .controls {
             display: flex;
-            gap: 15px;
+            gap: 10px;
             justify-content: center;
             flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+        
+        .video-controls {
+            display: none;
+            background: #f7fafc;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .video-controls.show {
+            display: block;
+        }
+        
+        .progress-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .progress-bar {
+            flex: 1;
+            height: 6px;
+            background: #e2e8f0;
+            border-radius: 3px;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: #667eea;
+            width: 0%;
+            transition: width 0.1s ease;
+        }
+        
+        .time-display {
+            font-size: 12px;
+            color: #4a5568;
+            min-width: 80px;
+        }
+        
+        .playback-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            justify-content: center;
         }
         
         .btn {
-            padding: 12px 24px;
+            padding: 10px 20px;
             border: none;
-            border-radius: 8px;
-            font-size: 16px;
+            border-radius: 6px;
+            font-size: 14px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 6px;
         }
         
         .btn:disabled {
@@ -126,8 +205,8 @@
         }
         
         .btn-primary:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 20px rgba(102, 126, 234, 0.4);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
         }
         
         .btn-secondary {
@@ -139,9 +218,19 @@
             background: #cbd5e0;
         }
         
+        .btn-success {
+            background: #48bb78;
+            color: white;
+        }
+        
         .btn-danger {
             background: #e53e3e;
             color: white;
+        }
+        
+        .btn-small {
+            padding: 6px 12px;
+            font-size: 12px;
         }
         
         .analysis-panel {
@@ -213,12 +302,19 @@
             font-size: 14px;
         }
         
+        .metric-value {
+            color: #2d3748;
+            font-weight: 600;
+            font-size: 14px;
+        }
+        
         .metric-bar {
-            width: 100px;
+            width: 80px;
             height: 8px;
             background: #e2e8f0;
             border-radius: 4px;
             overflow: hidden;
+            margin-left: 10px;
         }
         
         .metric-fill {
@@ -286,6 +382,35 @@
             z-index: 10;
         }
         
+        .analysis-progress {
+            display: none;
+            background: #e6fffa;
+            border: 1px solid #81e6d9;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+        
+        .analysis-progress.show {
+            display: block;
+        }
+        
+        .progress-spinner {
+            width: 30px;
+            height: 30px;
+            border: 3px solid #e2e8f0;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 10px;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
         .loading {
             display: none;
             text-align: center;
@@ -302,11 +427,6 @@
             margin: 0 auto 10px;
         }
         
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
         .error-message {
             background: #fed7d7;
             border: 1px solid #feb2b2;
@@ -317,22 +437,63 @@
             display: none;
         }
         
+        .mode-tabs {
+            display: flex;
+            background: #f7fafc;
+            border-radius: 8px;
+            padding: 4px;
+            margin-bottom: 20px;
+        }
+        
+        .mode-tab {
+            flex: 1;
+            padding: 10px;
+            text-align: center;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        .mode-tab.active {
+            background: white;
+            color: #667eea;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+        
+        .mode-tab:not(.active) {
+            color: #718096;
+        }
+        
+        .mode-content {
+            display: none;
+        }
+        
+        .mode-content.active {
+            display: block;
+        }
+        
         @media (max-width: 768px) {
             .main-content {
                 grid-template-columns: 1fr;
             }
             
             .controls {
-                gap: 10px;
+                gap: 8px;
             }
             
             .btn {
-                padding: 10px 16px;
-                font-size: 14px;
+                padding: 8px 12px;
+                font-size: 12px;
             }
             
             .video-container {
                 height: 300px;
+            }
+            
+            .mode-tabs {
+                flex-direction: column;
             }
         }
     </style>
@@ -342,7 +503,7 @@
         <!-- 头部 -->
         <div class="header">
             <h1>🎾 网球智能陪练</h1>
-            <p class="subtitle">AI驱动的网球技术分析与指导</p>
+            <p class="subtitle">AI驱动的网球技术分析与指导 - 支持实时摄像头和视频文件分析</p>
         </div>
         
         <!-- 错误提示 -->
@@ -352,32 +513,78 @@
         <div class="main-content">
             <!-- 视频分析区域 -->
             <div class="video-section">
-                <div class="video-container">
-                    <div class="status-indicator" id="statusIndicator">准备就绪</div>
-                    <video id="videoElement" autoplay muted playsinline style="display: none;"></video>
-                    <canvas id="canvasElement"></canvas>
-                    <div class="video-placeholder" id="placeholder">
-                        📹<br>
-                        点击开始摄像头分析<br>
-                        <small>支持实时网球动作识别</small>
+                <!-- 模式切换 -->
+                <div class="mode-tabs">
+                    <div class="mode-tab active" data-mode="camera">📹 实时摄像头</div>
+                    <div class="mode-tab" data-mode="upload">📁 上传视频</div>
+                </div>
+                
+                <!-- 摄像头模式 -->
+                <div class="mode-content active" id="cameraMode">
+                    <div class="video-container">
+                        <div class="status-indicator" id="statusIndicator">准备就绪</div>
+                        <video id="videoElement" autoplay muted playsinline style="display: none;"></video>
+                        <canvas id="canvasElement"></canvas>
+                        <div class="video-placeholder" id="placeholder">
+                            📹<br>
+                            点击开始摄像头分析<br>
+                            <small>支持实时网球动作识别</small>
+                        </div>
+                    </div>
+                    
+                    <div class="controls">
+                        <button class="btn btn-primary" id="startBtn">
+                            🎥 开始分析
+                        </button>
+                        <button class="btn btn-danger" id="stopBtn" style="display: none;">
+                            ⏹️ 停止分析
+                        </button>
+                        <button class="btn btn-secondary" id="resetBtn">
+                            🔄 重置
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- 上传视频模式 -->
+                <div class="mode-content" id="uploadMode">
+                    <div class="upload-area" id="uploadArea">
+                        <div class="upload-icon">📁</div>
+                        <p style="margin-bottom: 10px; color: #4a5568; font-weight: 500;">点击或拖拽上传视频文件</p>
+                        <p style="font-size: 12px; color: #718096;">支持 MP4, MOV, AVI 格式，建议文件大小不超过 50MB</p>
+                        <input type="file" id="fileInput" accept="video/*">
+                    </div>
+                    
+                    <div class="video-container" id="uploadVideoContainer" style="display: none;">
+                        <div class="status-indicator" id="uploadStatusIndicator">视频已加载</div>
+                        <video id="uploadVideoElement" controls style="width: 100%; height: 100%; object-fit: cover;"></video>
+                        <canvas id="uploadCanvasElement"></canvas>
+                    </div>
+                    
+                    <div class="video-controls" id="videoControls">
+                        <div class="progress-container">
+                            <span class="time-display" id="currentTime">00:00</span>
+                            <div class="progress-bar" id="progressBar">
+                                <div class="progress-fill" id="progressFill"></div>
+                            </div>
+                            <span class="time-display" id="totalTime">00:00</span>
+                        </div>
+                        <div class="playback-controls">
+                            <button class="btn btn-secondary btn-small" id="playPauseBtn">▶️ 播放</button>
+                            <button class="btn btn-primary btn-small" id="analyzeVideoBtn">🔍 分析视频</button>
+                            <button class="btn btn-secondary btn-small" id="clearVideoBtn">🗑️ 清除</button>
+                        </div>
+                    </div>
+                    
+                    <div class="analysis-progress" id="analysisProgress">
+                        <div class="progress-spinner"></div>
+                        <p style="color: #2d3748; font-weight: 500; margin-bottom: 5px;">正在分析视频...</p>
+                        <p style="color: #718096; font-size: 14px;" id="analysisProgressText">处理中，请稍候</p>
                     </div>
                 </div>
                 
                 <div class="loading" id="loadingIndicator">
                     <div class="spinner"></div>
                     <p>正在加载AI模型...</p>
-                </div>
-                
-                <div class="controls">
-                    <button class="btn btn-primary" id="startBtn">
-                        🎥 开始分析
-                    </button>
-                    <button class="btn btn-danger" id="stopBtn" style="display: none;">
-                        ⏹️ 停止分析
-                    </button>
-                    <button class="btn btn-secondary" id="resetBtn">
-                        🔄 重置
-                    </button>
                 </div>
             </div>
             
@@ -390,43 +597,55 @@
                             <div class="score-label">综合评分</div>
                         </div>
                     </div>
-                    <h3 style="color: #2d3748; margin-bottom: 5px;" id="analysisTitle">等待开始分析</h3>
-                    <p style="color: #718096; font-size: 14px;" id="analysisDesc">请开启摄像头开始动作分析</p>
+                    <h3 style="color: #2d3748; margin-bottom: 5px;" id="analysisTitle">选择分析模式</h3>
+                    <p style="color: #718096; font-size: 14px;" id="analysisDesc">实时摄像头或上传视频进行动作分析</p>
                 </div>
                 
                 <div class="metrics">
                     <div class="metric-item">
                         <span class="metric-label">姿势稳定性</span>
-                        <div class="metric-bar">
-                            <div class="metric-fill" id="stabilityFill"></div>
+                        <div style="display: flex; align-items: center;">
+                            <span class="metric-value" id="stabilityValue">--</span>
+                            <div class="metric-bar">
+                                <div class="metric-fill" id="stabilityFill"></div>
+                            </div>
                         </div>
                     </div>
                     <div class="metric-item">
                         <span class="metric-label">动作流畅度</span>
-                        <div class="metric-bar">
-                            <div class="metric-fill" id="fluidityFill"></div>
+                        <div style="display: flex; align-items: center;">
+                            <span class="metric-value" id="fluidityValue">--</span>
+                            <div class="metric-bar">
+                                <div class="metric-fill" id="fluidityFill"></div>
+                            </div>
                         </div>
                     </div>
                     <div class="metric-item">
                         <span class="metric-label">协调性</span>
-                        <div class="metric-bar">
-                            <div class="metric-fill" id="coordinationFill"></div>
+                        <div style="display: flex; align-items: center;">
+                            <span class="metric-value" id="coordinationValue">--</span>
+                            <div class="metric-bar">
+                                <div class="metric-fill" id="coordinationFill"></div>
+                            </div>
                         </div>
                     </div>
                     <div class="metric-item">
                         <span class="metric-label">技术准确性</span>
-                        <div class="metric-bar">
-                            <div class="metric-fill" id="accuracyFill"></div>
+                        <div style="display: flex; align-items: center;">
+                            <span class="metric-value" id="accuracyValue">--</span>
+                            <div class="metric-bar">
+                                <div class="metric-fill" id="accuracyFill"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
                 
                 <div class="suggestions">
-                    <h3>💡 实时建议</h3>
+                    <h3>💡 分析建议</h3>
                     <div id="suggestionsList">
                         <div class="suggestion-item">
                             <div class="suggestion-icon"></div>
-                            <span>开始分析后将显示动作建议</span>
+                            <span>选择分析模式后将显示动作建议</span>
                         </div>
                     </div>
                 </div>
@@ -446,9 +665,13 @@
                 this.pose = null;
                 this.camera = null;
                 this.videoElement = document.getElementById('videoElement');
+                this.uploadVideoElement = document.getElementById('uploadVideoElement');
                 this.canvasElement = document.getElementById('canvasElement');
+                this.uploadCanvasElement = document.getElementById('uploadCanvasElement');
                 this.canvasCtx = this.canvasElement.getContext('2d');
+                this.uploadCanvasCtx = this.uploadCanvasElement.getContext('2d');
                 this.isAnalyzing = false;
+                this.isUploadMode = false;
                 this.frameCount = 0;
                 this.poseHistory = [];
                 this.currentMetrics = {
@@ -493,12 +716,310 @@
             }
             
             setupEventListeners() {
-                document.getElementById('startBtn').addEventListener('click', () => this.startAnalysis());
+                // 模式切换
+                document.querySelectorAll('.mode-tab').forEach(tab => {
+                    tab.addEventListener('click', (e) => this.switchMode(e.target.dataset.mode));
+                });
+                
+                // 摄像头模式控制
+                document.getElementById('startBtn').addEventListener('click', () => this.startCameraAnalysis());
                 document.getElementById('stopBtn').addEventListener('click', () => this.stopAnalysis());
                 document.getElementById('resetBtn').addEventListener('click', () => this.reset());
+                
+                // 文件上传
+                const fileInput = document.getElementById('fileInput');
+                const uploadArea = document.getElementById('uploadArea');
+                
+                uploadArea.addEventListener('click', () => fileInput.click());
+                fileInput.addEventListener('change', (e) => this.handleFileUpload(e.target.files[0]));
+                
+                // 拖拽上传
+                uploadArea.addEventListener('dragover', (e) => {
+                    e.preventDefault();
+                    uploadArea.classList.add('dragover');
+                });
+                
+                uploadArea.addEventListener('dragleave', () => {
+                    uploadArea.classList.remove('dragover');
+                });
+                
+                uploadArea.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    uploadArea.classList.remove('dragover');
+                    const file = e.dataTransfer.files[0];
+                    if (file && file.type.startsWith('video/')) {
+                        this.handleFileUpload(file);
+                    }
+                });
+                
+                // 视频控制
+                document.getElementById('playPauseBtn').addEventListener('click', () => this.togglePlayPause());
+                document.getElementById('analyzeVideoBtn').addEventListener('click', () => this.analyzeUploadedVideo());
+                document.getElementById('clearVideoBtn').addEventListener('click', () => this.clearVideo());
+                
+                // 进度条控制
+                document.getElementById('progressBar').addEventListener('click', (e) => this.seekVideo(e));
             }
             
-            async startAnalysis() {
+            switchMode(mode) {
+                document.querySelectorAll('.mode-tab').forEach(tab => tab.classList.remove('active'));
+                document.querySelectorAll('.mode-content').forEach(content => content.classList.remove('active'));
+                
+                document.querySelector(`[data-mode="${mode}"]`).classList.add('active');
+                document.getElementById(`${mode}Mode`).classList.add('active');
+                
+                this.isUploadMode = mode === 'upload';
+                this.reset();
+                
+                if (mode === 'camera') {
+                    this.updateAnalysisPanel('--', '实时摄像头模式', '点击开始分析进行实时动作识别');
+                } else {
+                    this.updateAnalysisPanel('--', '视频文件模式', '上传视频文件进行动作分析');
+                }
+            }
+            
+            async handleFileUpload(file) {
+                if (!file || !file.type.startsWith('video/')) {
+                    this.showError('请选择有效的视频文件');
+                    return;
+                }
+                
+                if (file.size > 50 * 1024 * 1024) { // 50MB limit
+                    this.showError('文件大小不能超过50MB');
+                    return;
+                }
+                
+                try {
+                    const url = URL.createObjectURL(file);
+                    this.uploadVideoElement.src = url;
+                    
+                    this.uploadVideoElement.onloadedmetadata = () => {
+                        document.getElementById('uploadArea').style.display = 'none';
+                        document.getElementById('uploadVideoContainer').style.display = 'block';
+                        document.getElementById('videoControls').classList.add('show');
+                        
+                        // 设置画布尺寸
+                        this.uploadCanvasElement.width = this.uploadVideoElement.videoWidth;
+                        this.uploadCanvasElement.height = this.uploadVideoElement.videoHeight;
+                        
+                        this.updateTimeDisplay();
+                        this.updateAnalysisPanel('--', '视频已加载', '点击分析按钮开始处理视频');
+                    };
+                    
+                    // 视频时间更新
+                    this.uploadVideoElement.addEventListener('timeupdate', () => {
+                        this.updateTimeDisplay();
+                        this.updateProgressBar();
+                    });
+                    
+                } catch (error) {
+                    this.showError('视频加载失败: ' + error.message);
+                }
+            }
+            
+            togglePlayPause() {
+                const video = this.uploadVideoElement;
+                const btn = document.getElementById('playPauseBtn');
+                
+                if (video.paused) {
+                    video.play();
+                    btn.textContent = '⏸️ 暂停';
+                } else {
+                    video.pause();
+                    btn.textContent = '▶️ 播放';
+                }
+            }
+            
+            updateTimeDisplay() {
+                const video = this.uploadVideoElement;
+                document.getElementById('currentTime').textContent = this.formatTime(video.currentTime);
+                document.getElementById('totalTime').textContent = this.formatTime(video.duration);
+            }
+            
+            updateProgressBar() {
+                const video = this.uploadVideoElement;
+                const progress = (video.currentTime / video.duration) * 100;
+                document.getElementById('progressFill').style.width = `${progress}%`;
+            }
+            
+            seekVideo(e) {
+                const progressBar = document.getElementById('progressBar');
+                const rect = progressBar.getBoundingClientRect();
+                const percentage = (e.clientX - rect.left) / rect.width;
+                this.uploadVideoElement.currentTime = percentage * this.uploadVideoElement.duration;
+            }
+            
+            formatTime(seconds) {
+                const mins = Math.floor(seconds / 60);
+                const secs = Math.floor(seconds % 60);
+                return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            }
+            
+            clearVideo() {
+                this.uploadVideoElement.src = '';
+                document.getElementById('uploadArea').style.display = 'block';
+                document.getElementById('uploadVideoContainer').style.display = 'none';
+                document.getElementById('videoControls').classList.remove('show');
+                document.getElementById('analysisProgress').classList.remove('show');
+                document.getElementById('fileInput').value = '';
+                
+                this.updateAnalysisPanel('--', '视频文件模式', '上传视频文件进行动作分析');
+                this.resetMetrics();
+            }
+            
+            async analyzeUploadedVideo() {
+                if (!this.uploadVideoElement.src) {
+                    this.showError('请先上传视频文件');
+                    return;
+                }
+                
+                this.isAnalyzing = true;
+                document.getElementById('analysisProgress').classList.add('show');
+                document.getElementById('analyzeVideoBtn').disabled = true;
+                
+                // 重置分析数据
+                this.frameCount = 0;
+                this.poseHistory = [];
+                this.currentMetrics = { stability: 0, fluidity: 0, coordination: 0, accuracy: 0 };
+                
+                try {
+                    await this.processVideoFrames();
+                } catch (error) {
+                    this.showError('视频分析失败: ' + error.message);
+                } finally {
+                    this.isAnalyzing = false;
+                    document.getElementById('analysisProgress').classList.remove('show');
+                    document.getElementById('analyzeVideoBtn').disabled = false;
+                }
+            }
+            
+            async processVideoFrames() {
+                const video = this.uploadVideoElement;
+                const canvas = this.uploadCanvasElement;
+                const ctx = this.uploadCanvasCtx;
+                
+                video.currentTime = 0;
+                const duration = video.duration;
+                const frameRate = 5; // 每秒分析5帧
+                const frameInterval = 1 / frameRate;
+                
+                return new Promise((resolve, reject) => {
+                    let currentTime = 0;
+                    let analysisResults = [];
+                    
+                    const processFrame = async () => {
+                        if (currentTime >= duration || !this.isAnalyzing) {
+                            // 分析完成，计算最终结果
+                            this.calculateFinalResults(analysisResults);
+                            resolve();
+                            return;
+                        }
+                        
+                        video.currentTime = currentTime;
+                        
+                        // 等待视频定位到指定时间
+                        await new Promise((frameResolve) => {
+                            const checkTime = () => {
+                                if (Math.abs(video.currentTime - currentTime) < 0.1) {
+                                    frameResolve();
+                                } else {
+                                    setTimeout(checkTime, 10);
+                                }
+                            };
+                            checkTime();
+                        });
+                        
+                        // 绘制当前帧到画布
+                        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+                        
+                        // 发送到MediaPipe进行姿态识别
+                        try {
+                            await this.pose.send({image: canvas});
+                            
+                            // 等待姿态识别结果
+                            await new Promise(resolve => setTimeout(resolve, 100));
+                            
+                        } catch (error) {
+                            console.warn('Frame analysis failed:', error);
+                        }
+                        
+                        // 更新进度
+                        const progress = (currentTime / duration) * 100;
+                        document.getElementById('analysisProgressText').textContent = 
+                            `已分析 ${Math.round(progress)}% (${this.formatTime(currentTime)}/${this.formatTime(duration)})`;
+                        
+                        currentTime += frameInterval;
+                        
+                        // 继续处理下一帧
+                        setTimeout(processFrame, 50);
+                    };
+                    
+                    processFrame();
+                });
+            }
+            
+            calculateFinalResults(results) {
+                if (this.poseHistory.length === 0) {
+                    this.showError('未检测到有效的动作数据，请确保视频中有清晰的人体动作');
+                    return;
+                }
+                
+                // 计算整个视频的平均指标
+                const avgMetrics = {
+                    stability: 0,
+                    fluidity: 0,
+                    coordination: 0,
+                    accuracy: 0
+                };
+                
+                // 分析所有帧的数据
+                let validFrames = 0;
+                this.poseHistory.forEach((landmarks, index) => {
+                    if (landmarks && landmarks.length > 0) {
+                        const frameMetrics = this.calculateFrameMetrics(landmarks, index);
+                        avgMetrics.stability += frameMetrics.stability;
+                        avgMetrics.fluidity += frameMetrics.fluidity;
+                        avgMetrics.coordination += frameMetrics.coordination;
+                        avgMetrics.accuracy += frameMetrics.accuracy;
+                        validFrames++;
+                    }
+                });
+                
+                if (validFrames > 0) {
+                    Object.keys(avgMetrics).forEach(key => {
+                        avgMetrics[key] = Math.round(avgMetrics[key] / validFrames);
+                    });
+                    
+                    this.currentMetrics = avgMetrics;
+                    const overallScore = Math.round(
+                        (avgMetrics.stability + avgMetrics.fluidity + avgMetrics.coordination + avgMetrics.accuracy) / 4
+                    );
+                    
+                    this.updateAnalysisPanel(
+                        overallScore,
+                        '视频分析完成',
+                        `共分析 ${validFrames} 帧，${this.getAnalysisDescription(overallScore)}`
+                    );
+                    
+                    this.updateMetrics();
+                    this.updateSuggestions(this.generateSuggestions());
+                } else {
+                    this.showError('视频分析未发现有效动作，请上传包含清晰人体动作的视频');
+                }
+            }
+            
+            calculateFrameMetrics(landmarks, frameIndex) {
+                return {
+                    stability: this.calculateStability(landmarks),
+                    fluidity: this.calculateFluidity(),
+                    coordination: this.calculateCoordination(landmarks),
+                    accuracy: this.calculateAccuracy(landmarks)
+                };
+            }
+            
+            async startCameraAnalysis() {
+                if (this.isUploadMode) return;
+                
                 try {
                     this.updateStatus('启动摄像头...');
                     
@@ -516,7 +1037,7 @@
                     
                     this.camera = new Camera(this.videoElement, {
                         onFrame: async () => {
-                            if (this.isAnalyzing) {
+                            if (this.isAnalyzing && !this.isUploadMode) {
                                 await this.pose.send({image: this.videoElement});
                             }
                         },
@@ -530,7 +1051,6 @@
                     this.updateStatus('分析中...');
                     this.updateButtons(false);
                     
-                    // 开始分析循环
                     this.startAnalysisLoop();
                     
                 } catch (error) {
@@ -563,83 +1083,99 @@
                     accuracy: 0
                 };
                 
-                this.videoElement.style.display = 'none';
-                document.getElementById('placeholder').style.display = 'block';
-                this.canvasCtx.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height);
+                if (!this.isUploadMode) {
+                    this.videoElement.style.display = 'none';
+                    document.getElementById('placeholder').style.display = 'block';
+                    this.canvasCtx.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height);
+                    this.updateAnalysisPanel('--', '实时摄像头模式', '点击开始分析进行实时动作识别');
+                } else {
+                    this.clearVideo();
+                }
                 
-                this.updateAnalysisPanel(0, '等待开始分析', '请开启摄像头开始动作分析');
                 this.resetMetrics();
-                this.updateSuggestions([{text: '开始分析后将显示动作建议'}]);
+                this.updateSuggestions([{text: '选择分析模式后将显示动作建议'}]);
                 this.updateStatus('准备就绪');
             }
             
             onResults(results) {
                 if (!this.isAnalyzing) return;
                 
-                this.canvasElement.width = this.videoElement.videoWidth;
-                this.canvasElement.height = this.videoElement.videoHeight;
+                const canvas = this.isUploadMode ? this.uploadCanvasElement : this.canvasElement;
+                const ctx = this.isUploadMode ? this.uploadCanvasCtx : this.canvasCtx;
+                const video = this.isUploadMode ? this.uploadVideoElement : this.videoElement;
                 
-                this.canvasCtx.save();
-                this.canvasCtx.clearRect(0, 0, this.canvasElement.width, this.canvasElement.height);
+                canvas.width = video.videoWidth || video.width || 640;
+                canvas.height = video.videoHeight || video.height || 480;
                 
-                // 绘制姿态骨架
-                if (results.poseLandmarks) {
-                    this.drawPose(results.poseLandmarks);
-                    this.analyzePose(results.poseLandmarks);
+                ctx.save();
+                if (!this.isUploadMode) {
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
                 }
                 
-                this.canvasCtx.restore();
+                if (results.poseLandmarks) {
+                    this.drawPose(results.poseLandmarks, ctx, canvas);
+                    
+                    if (!this.isUploadMode) {
+                        // 实时模式：立即分析
+                        this.analyzePose(results.poseLandmarks);
+                    } else {
+                        // 视频模式：存储数据供后续分析
+                        this.poseHistory.push(results.poseLandmarks);
+                    }
+                }
+                
+                ctx.restore();
                 this.frameCount++;
             }
             
-            drawPose(landmarks) {
+            drawPose(landmarks, ctx, canvas) {
                 // 绘制连接线
                 this.drawConnections(landmarks, [
                     [11, 12], [11, 13], [13, 15], [12, 14], [14, 16], // 手臂
                     [11, 23], [12, 24], [23, 24], // 躯干
                     [23, 25], [25, 27], [24, 26], [26, 28] // 腿部
-                ], '#00ff00', 2);
+                ], '#00ff00', 2, ctx, canvas);
                 
                 // 绘制关键点
-                this.drawLandmarks(landmarks, '#ff0000', 4);
+                this.drawLandmarks(landmarks, '#ff0000', 4, ctx, canvas);
             }
             
-            drawConnections(landmarks, connections, color, width) {
-                this.canvasCtx.strokeStyle = color;
-                this.canvasCtx.lineWidth = width;
+            drawConnections(landmarks, connections, color, width, ctx, canvas) {
+                ctx.strokeStyle = color;
+                ctx.lineWidth = width;
                 
                 connections.forEach(([start, end]) => {
                     const startPoint = landmarks[start];
                     const endPoint = landmarks[end];
                     
                     if (startPoint && endPoint) {
-                        this.canvasCtx.beginPath();
-                        this.canvasCtx.moveTo(
-                            startPoint.x * this.canvasElement.width,
-                            startPoint.y * this.canvasElement.height
+                        ctx.beginPath();
+                        ctx.moveTo(
+                            startPoint.x * canvas.width,
+                            startPoint.y * canvas.height
                         );
-                        this.canvasCtx.lineTo(
-                            endPoint.x * this.canvasElement.width,
-                            endPoint.y * this.canvasElement.height
+                        ctx.lineTo(
+                            endPoint.x * canvas.width,
+                            endPoint.y * canvas.height
                         );
-                        this.canvasCtx.stroke();
+                        ctx.stroke();
                     }
                 });
             }
             
-            drawLandmarks(landmarks, color, radius) {
-                this.canvasCtx.fillStyle = color;
+            drawLandmarks(landmarks, color, radius, ctx, canvas) {
+                ctx.fillStyle = color;
                 
                 landmarks.forEach(landmark => {
-                    this.canvasCtx.beginPath();
-                    this.canvasCtx.arc(
-                        landmark.x * this.canvasElement.width,
-                        landmark.y * this.canvasElement.height,
+                    ctx.beginPath();
+                    ctx.arc(
+                        landmark.x * canvas.width,
+                        landmark.y * canvas.height,
                         radius,
                         0,
                         2 * Math.PI
                     );
-                    this.canvasCtx.fill();
+                    ctx.fill();
                 });
             }
             
@@ -649,7 +1185,6 @@
                     this.poseHistory.shift();
                 }
                 
-                // 分析动作稳定性
                 const stability = this.calculateStability(landmarks);
                 const fluidity = this.calculateFluidity();
                 const coordination = this.calculateCoordination(landmarks);
@@ -664,7 +1199,6 @@
                 
                 const overallScore = Math.round((stability + fluidity + coordination + accuracy) / 4);
                 
-                // 更新UI
                 this.updateAnalysisPanel(
                     overallScore,
                     '实时动作分析',
@@ -675,10 +1209,10 @@
                 this.updateSuggestions(this.generateSuggestions());
             }
             
+            // ... 其他方法保持不变 ...
             calculateStability(landmarks) {
                 if (this.poseHistory.length < 5) return 50;
                 
-                // 计算重心稳定性
                 const centerOfMass = this.getCenterOfMass(landmarks);
                 const recentCenters = this.poseHistory.slice(-5).map(pose => this.getCenterOfMass(pose));
                 
@@ -698,9 +1232,8 @@
             calculateFluidity() {
                 if (this.poseHistory.length < 10) return 50;
                 
-                // 计算动作流畅度（基于关节角度变化的平滑程度）
                 const shoulderAngles = this.poseHistory.slice(-10).map(pose => 
-                    this.calculateAngle(pose[11], pose[13], pose[15]) // 左臂角度
+                    this.calculateAngle(pose[11], pose[13], pose[15])
                 );
                 
                 let smoothness = 0;
@@ -713,42 +1246,35 @@
             }
             
             calculateCoordination(landmarks) {
-                // 计算身体各部分的协调性
                 const leftArm = this.calculateAngle(landmarks[11], landmarks[13], landmarks[15]);
                 const rightArm = this.calculateAngle(landmarks[12], landmarks[14], landmarks[16]);
                 const torso = this.calculateAngle(landmarks[11], landmarks[23], landmarks[25]);
                 
-                // 理想的网球动作协调性评估
-                let coordinationScore = 70; // 基础分
+                let coordinationScore = 70;
                 
-                // 检查手臂对称性
                 const armSymmetry = Math.abs(leftArm - rightArm);
                 if (armSymmetry < 30) coordinationScore += 15;
                 else if (armSymmetry < 60) coordinationScore += 10;
                 
-                // 检查身体姿态
-                if (torso > 160 && torso < 180) coordinationScore += 15; // 身体挺直
+                if (torso > 160 && torso < 180) coordinationScore += 15;
                 
                 return Math.min(100, coordinationScore);
             }
             
             calculateAccuracy(landmarks) {
-                // 模拟网球技术准确性评估
-                const wrist = landmarks[16] || landmarks[15]; // 右手或左手腕
+                const wrist = landmarks[16] || landmarks[15];
                 const shoulder = landmarks[12] || landmarks[11];
                 const hip = landmarks[24] || landmarks[23];
                 
                 if (!wrist || !shoulder || !hip) return 50;
                 
-                let accuracyScore = 60; // 基础分
+                let accuracyScore = 60;
                 
-                // 检查击球姿势
                 const armExtension = this.calculateDistance(shoulder, wrist);
-                if (armExtension > 0.3) accuracyScore += 20; // 手臂伸展良好
+                if (armExtension > 0.3) accuracyScore += 20;
                 
-                // 检查身体重心
                 const balance = Math.abs(shoulder.x - hip.x);
-                if (balance < 0.1) accuracyScore += 20; // 重心稳定
+                if (balance < 0.1) accuracyScore += 20;
                 
                 return Math.min(100, accuracyScore);
             }
@@ -787,11 +1313,10 @@
             }
             
             startAnalysisLoop() {
-                if (!this.isAnalyzing) return;
+                if (!this.isAnalyzing || this.isUploadMode) return;
                 
-                // 每秒更新一次分析结果
                 setTimeout(() => {
-                    if (this.isAnalyzing) {
+                    if (this.isAnalyzing && !this.isUploadMode) {
                         this.startAnalysisLoop();
                     }
                 }, 1000);
@@ -837,15 +1362,22 @@
                 document.getElementById('analysisTitle').textContent = title;
                 document.getElementById('analysisDesc').textContent = description;
                 
-                // 更新评分圆环
-                const circle = document.getElementById('scoreCircle');
-                const degree = (score / 100) * 360;
-                const color = score >= 80 ? '#48bb78' : score >= 60 ? '#ed8936' : '#e53e3e';
-                circle.style.background = `conic-gradient(${color} 0deg ${degree}deg, #e2e8f0 ${degree}deg 360deg)`;
+                if (score !== '--') {
+                    const degree = (score / 100) * 360;
+                    const color = score >= 80 ? '#48bb78' : score >= 60 ? '#ed8936' : '#e53e3e';
+                    document.getElementById('scoreCircle').style.background = 
+                        `conic-gradient(${color} 0deg ${degree}deg, #e2e8f0 ${degree}deg 360deg)`;
+                }
             }
             
             updateMetrics() {
                 const metrics = this.currentMetrics;
+                
+                document.getElementById('stabilityValue').textContent = metrics.stability;
+                document.getElementById('fluidityValue').textContent = metrics.fluidity;
+                document.getElementById('coordinationValue').textContent = metrics.coordination;
+                document.getElementById('accuracyValue').textContent = metrics.accuracy;
+                
                 document.getElementById('stabilityFill').style.width = `${metrics.stability}%`;
                 document.getElementById('fluidityFill').style.width = `${metrics.fluidity}%`;
                 document.getElementById('coordinationFill').style.width = `${metrics.coordination}%`;
@@ -853,6 +1385,11 @@
             }
             
             resetMetrics() {
+                document.getElementById('stabilityValue').textContent = '--';
+                document.getElementById('fluidityValue').textContent = '--';
+                document.getElementById('coordinationValue').textContent = '--';
+                document.getElementById('accuracyValue').textContent = '--';
+                
                 document.getElementById('stabilityFill').style.width = '0%';
                 document.getElementById('fluidityFill').style.width = '0%';
                 document.getElementById('coordinationFill').style.width = '0%';
@@ -876,8 +1413,8 @@
             }
             
             updateStatus(status) {
-                document.getElementById('statusIndicator').textContent = status;
                 const indicator = document.getElementById('statusIndicator');
+                indicator.textContent = status;
                 
                 if (status.includes('分析中')) {
                     indicator.style.background = 'rgba(237, 137, 54, 0.1)';
@@ -919,7 +1456,6 @@
             }
         }
         
-        // 初始化应用
         document.addEventListener('DOMContentLoaded', () => {
             new TennisAnalyzer();
         });
